@@ -15,7 +15,11 @@ const businesses = businessesData;
         Guia648
       </a>
       
-      <div class="flex items-center gap-4">
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex items-center gap-4">
+        <a href="/" class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          Inicio
+        </a>
         <a href="/directorio/turismo" class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
           Turismo
         </a>
@@ -30,38 +34,89 @@ const businesses = businessesData;
         </a>
         <ThemeToggle />
       </div>
+
+      <!-- Mobile Menu Button -->
+      <button id="mobile-menu-btn" class="md:hidden p-2 text-stone-600 dark:text-stone-300" aria-label="Abrir menú">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
     </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-sand-dark border-t border-stone-200 dark:border-stone-800">
+      <div class="px-4 py-3 space-y-2">
+        <a href="/" class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          🏠 Inicio
+        </a>
+        <a href="/directorio/turismo" class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          🏨 Turismo
+        </a>
+        <a href="/directorio/gastronomia" class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          🍽️ Gastronomía
+        </a>
+        <a href="/directorio/salud" class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          ❤️ Salud
+        </a>
+        <a href="/directorio/servicios" class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          🔧 Servicios
+        </a>
+        <div class="pt-2 border-t border-stone-200 dark:border-stone-700">
+          <ThemeToggle />
+        </div>
+      </div>
+    </div>
   </header>
+
+  <script>
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    menuBtn?.addEventListener('click', () => {
+      mobileMenu?.classList.toggle('hidden');
+    });
+
+    // Close menu when clicking a link
+    mobileMenu?.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+      });
+    });
+  </script>
 
   <main>
     <!-- Hero Section -->
-    <section class="relative h-[70vh] min-h-[500px] flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20 dark:from-primary-dark/20 dark:to-secondary-dark/20">
-      <!-- Placeholder for Camargo background image -->
-      <div class="absolute inset-0 bg-stone-300 dark:bg-stone-800">
-        <div class="absolute inset-0 flex items-center justify-center text-stone-500 dark:text-stone-400">
-          <span class="text-lg">Imagen de Camargo (El Faro / La Presa)</span>
-        </div>
+    <section class="relative h-[60vh] md:h-[70vh] min-h-[400px] md:min-h-[500px] flex items-center justify-center overflow-hidden">
+      <!-- Hero Image -->
+      <div class="absolute inset-0">
+        <img 
+          src="/images/hero/hero.webp" 
+          alt="Camargo, Chihuahua" 
+          class="w-full h-full object-cover"
+        />
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-black/40 md:bg-black/50"></div>
       </div>
       
       <div class="relative z-10 text-center px-4 max-w-3xl mx-auto">
-        <h1 class="text-4xl md:text-6xl font-bold mb-4 text-stone-900 dark:text-white">
+        <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 text-white drop-shadow-lg">
           Descubre Camargo
         </h1>
-        <p class="text-lg md:text-xl mb-8 text-stone-700 dark:text-stone-200">
+        <p class="text-base md:text-lg lg:text-xl mb-6 md:mb-8 text-white/90 drop-shadow-md">
           El directorio de comercios y servicios locales
         </p>
         
         <!-- Search Bar -->
-        <form action="/buscar" method="get" class="flex gap-2 max-w-xl mx-auto">
+        <form action="/buscar" method="get" class="flex flex-col sm:flex-row gap-2 sm:gap-2 max-w-xl mx-auto">
           <input
             type="search"
             name="q"
             placeholder="Buscar: nuts, restaurant, pharmacy..."
-            class="flex-1 px-4 py-3 rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 text-stone-900 dark:text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-accent"
+            class="flex-1 px-4 py-3 rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 text-stone-900 dark:text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-accent text-base"
           />
           <button
             type="submit"
-            class="px-6 py-3 bg-primary dark:bg-accent-dark text-white font-semibold rounded-lg hover:bg-primary-dark dark:hover:bg-accent transition-colors"
+            class="px-6 py-3 bg-primary dark:bg-accent-dark text-white font-semibold rounded-lg hover:bg-primary-dark dark:hover:bg-accent transition-colors whitespace-nowrap"
           >
             Buscar
           </button>
