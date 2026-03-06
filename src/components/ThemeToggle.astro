@@ -3,8 +3,9 @@ import { Sun, Moon } from '@lucide/astro';
 ---
 
 <button
-  class="theme-toggle p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+  onclick="toggleTheme()"
   type="button"
+  class="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
   aria-label="Toggle dark mode"
 >
   <Sun class="w-5 h-5 hidden dark:block" />
@@ -12,8 +13,21 @@ import { Sun, Moon } from '@lucide/astro';
 </button>
 
 <script is:inline>
-  // Initialize theme immediately
-  (function initTheme() {
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.classList.contains('dark');
+    
+    if (isDark) {
+      html.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    } else {
+      html.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    }
+  }
+
+  // Initialize on load
+  (function() {
     const saved = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const theme = saved || (prefersDark ? 'dark' : 'light');
@@ -23,28 +37,4 @@ import { Sun, Moon } from '@lucide/astro';
     }
     localStorage.setItem('theme', theme);
   })();
-
-  // Handle clicks - wait for DOM to be ready
-  function attachHandlers() {
-    document.querySelectorAll('.theme-toggle').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        const html = document.documentElement;
-        const isDark = html.classList.contains('dark');
-        
-        if (isDark) {
-          html.classList.remove('dark');
-          localStorage.setItem('theme', 'light');
-        } else {
-          html.classList.add('dark');
-          localStorage.setItem('theme', 'dark');
-        }
-      });
-    });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', attachHandlers);
-  } else {
-    attachHandlers();
-  }
 </script>
