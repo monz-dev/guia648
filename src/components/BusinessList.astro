@@ -1,0 +1,35 @@
+---
+import BusinessCard from './BusinessCard.astro';
+
+interface Props {
+  businesses: Array<{
+    id: string;
+    name: string;
+    slug: string;
+    category: string;
+    description: string;
+    phone?: string;
+    whatsapp?: string;
+    address?: string;
+    google_maps_url?: string;
+    logo_url?: string | null;
+    featured?: boolean;
+  }>;
+  categoryName?: string;
+}
+
+const { businesses, categoryName } = Astro.props;
+---
+
+{businesses.length === 0 ? (
+  <div class="text-center py-12">
+    <p class="text-stone-600 dark:text-stone-400 mb-4">No hay negocios en esta categoría todavía.</p>
+    <a href="/" class="text-primary dark:text-accent hover:underline">Volver al inicio</a>
+  </div>
+) : (
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {businesses.map((business) => (
+      <BusinessCard {...business} />
+    ))}
+  </div>
+)}

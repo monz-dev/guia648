@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ThemeToggle from '../../components/ThemeToggle.astro';
+import BusinessList from '../../components/BusinessList.astro';
+import categoriesData from '../../data/categories/categories.json';
+import businessesData from '../../data/businesses/businesses.json';
+
+export function getStaticPaths() {
+  const categories = categoriesData;
+  return categories.map((category) => ({
+    params: { categoria: category.slug },
+    props: { 
+      category,
+      allBusinesses: businessesData
+    },
+  }));
+}
+
+const { category, allBusinesses } = Astro.props;
+const businesses = allBusinesses.filter((b) => b.category === category.slug);
+---
+
+<BaseLayout title={`${category.name} - Directorio`}>
+  <header class="fixed top-0 w-full bg-white/80 dark:bg-sand-dark/80 backdrop-blur-md z-50 border-b border-stone-200 dark:border-stone-800">
+    <nav class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="/" class="text-xl font-bold text-primary dark:text-accent">
+        Guia648
+      </a>
+      
+      <div class="flex items-center gap-4">
+        <a href="/directorio/turismo" class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          Turismo
+        </a>
+        <a href="/directorio/gastronomia" class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          Gastronomía
+        </a>
+        <a href="/directorio/salud" class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          Salud
+        </a>
+        <a href="/directorio/servicios" class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          Servicios
+        </a>
+        <ThemeToggle />
+      </div>
+    </nav>
+  </header>
+
+  <main class="pt-24 pb-16 px-4 max-w-7xl mx-auto">
+    <div class="mb-8">
+      <a href="/" class="text-primary dark:text-accent hover:underline text-sm mb-4 inline-block">
+        ← Volver al inicio
+      </a>
+      <h1 class="text-3xl md:text-4xl font-bold text-stone-900 dark:text-white mb-2">
+        {category.name}
+      </h1>
+      <p class="text-stone-600 dark:text-stone-400">
+        {businesses.length} {businesses.length === 1 ? 'negocio' : 'negocios'} encontrados
+      </p>
+    </div>
+
+    <BusinessList businesses={businesses} categoryName={category.name} />
+  </main>
+
+  <footer class="py-8 px-4 bg-stone-900 text-stone-400">
+    <div class="max-w-7xl mx-auto text-center">
+      <p class="mb-2">© 2024 Guia648 - Directorio Digital de Camargo, Chihuahua</p>
+      <p class="text-sm">Conectando residentes y turistas con los mejores comercios locales</p>
+    </div>
+  </footer>
+</BaseLayout>

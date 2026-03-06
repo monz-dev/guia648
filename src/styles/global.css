@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors - Earth tones inspired by Chihuahua */
+  --color-primary: #8b7355;
+  --color-primary-dark: #6b5344;
+  --color-secondary: #4a7c59;
+  --color-secondary-dark: #3d6349;
+  --color-accent: #c9a227;
+  --color-accent-dark: #b8921f;
+  
+  /* Neutrals */
+  --color-sand: #f5f0e8;
+  --color-sand-dark: #1a1814;
+  --color-stone: #78716c;
+  --color-stone-dark: #a8a29e;
+}
+
+/* Dark mode support via CSS variables */
+:root {
+  --background: #ffffff;
+  --foreground: #1c1917;
+}
+
+.dark {
+  --background: #0f0e0b;
+  --foreground: #f5f0e8;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}

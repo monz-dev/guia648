@@ -1,0 +1,150 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ThemeToggle from '../../components/ThemeToggle.astro';
+import categoriesData from '../../data/categories/categories.json';
+import businessesData from '../../data/businesses/businesses.json';
+
+export function getStaticPaths() {
+  return businessesData.map((business) => ({
+    params: { slug: business.slug },
+    props: { business },
+  }));
+}
+
+const { business } = Astro.props;
+const category = categoriesData.find((c) => c.slug === business.category);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": business.name,
+  "description": business.description,
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Camargo",
+    "addressRegion": "Chihuahua",
+    "addressCountry": "MX"
+  },
+  "telephone": business.phone ? `+52${business.phone}` : undefined,
+  "url": `https://guia648.com/negocio/${business.slug}`,
+  ...(business.logo_url && { "image": business.logo_url })
+};
+---
+
+<BaseLayout title={business.name} description={business.description}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <header class="fixed top-0 w-full bg-white/80 dark:bg-sand-dark/80 backdrop-blur-md z-50 border-b border-stone-200 dark:border-stone-800">
+    <nav class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="/" class="text-xl font-bold text-primary dark:text-accent">
+        Guia648
+      </a>
+      
+      <div class="flex items-center gap-4">
+        <a href="/directorio/turismo" class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          Turismo
+        </a>
+        <a href="/directorio/gastronomia" class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          Gastronomía
+        </a>
+        <a href="/directorio/salud" class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          Salud
+        </a>
+        <a href="/directorio/servicios" class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          Servicios
+        </a>
+        <ThemeToggle />
+      </div>
+    </nav>
+  </header>
+
+  <main class="pt-24 pb-16 px-4 max-w-4xl mx-auto">
+    <a href={`/directorio/${business.category}`} class="text-primary dark:text-accent hover:underline text-sm mb-4 inline-block">
+      ← Volver a {category?.name || 'directorio'}
+    </a>
+
+    <div class="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 overflow-hidden">
+      {business.logo_url && (
+        <div class="aspect-video w-full bg-stone-200 dark:bg-stone-700">
+          <img 
+            src={business.logo_url} 
+            alt={business.name}
+            class="w-full h-full object-cover"
+          />
+        </div>
+      )}
+
+      <div class="p-6 md:p-8">
+        <div class="flex items-start justify-between mb-6">
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-stone-900 dark:text-white mb-2">
+              {business.name}
+            </h1>
+            {category && (
+              <a 
+                href={`/directorio/${category.slug}`}
+                class="text-sm text-primary dark:text-accent hover:underline"
+              >
+                {category.name}
+              </a>
+            )}
+          </div>
+        </div>
+
+        <p class="text-stone-600 dark:text-stone-300 mb-8 text-lg">
+          {business.description}
+        </p>
+
+        <div class="grid gap-4">
+          {business.phone && (
+            <a
+              href={`tel:${business.phone}`}
+              class="flex items-center gap-3 p-4 rounded-xl bg-stone-100 dark:bg-stone-700 hover:bg-primary/10 dark:hover:bg-accent-dark/10 transition-colors"
+            >
+              <span class="text-xl">📞</span>
+              <span class="font-medium text-stone-900 dark:text-white">{business.phone}</span>
+            </a>
+          )}
+
+          {business.whatsapp && (
+            <a
+              href={`https://wa.me/52${business.whatsapp}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-3 p-4 rounded-xl bg-green-500/10 hover:bg-green-500/20 transition-colors"
+            >
+              <span class="text-xl">💬</span>
+              <span class="font-medium text-green-700 dark:text-green-400">WhatsApp</span>
+            </a>
+          )}
+
+          {business.address && (
+            <div class="flex items-center gap-3 p-4 rounded-xl bg-stone-100 dark:bg-stone-700">
+              <span class="text-xl">📍</span>
+              <span class="text-stone-900 dark:text-white">{business.address}</span>
+            </div>
+          )}
+
+          {business.google_maps_url && (
+            <a
+              href={business.google_maps_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-3 p-4 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 transition-colors"
+            >
+              <span class="text-xl">🗺️</span>
+              <span class="font-medium text-blue-700 dark:text-blue-400">Ver en Google Maps</span>
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="py-8 px-4 bg-stone-900 text-stone-400">
+    <div class="max-w-7xl mx-auto text-center">
+      <p class="mb-2">© 2024 Guia648 - Directorio Digital de Camargo, Chihuahua</p>
+      <p class="text-sm">Conectando residentes y turistas con los mejores comercios locales</p>
+    </div>
+  </footer>
+</BaseLayout>

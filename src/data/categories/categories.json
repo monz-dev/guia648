@@ -1,0 +1,30 @@
+[
+  {
+    "id": "1",
+    "name": "Turismo",
+    "slug": "turismo",
+    "icon": "map",
+    "order": 1
+  },
+  {
+    "id": "2", 
+    "name": "Gastronomía",
+    "slug": "gastronomia",
+    "icon": "utensils",
+    "order": 2
+  },
+  {
+    "id": "3",
+    "name": "Salud",
+    "slug": "salud", 
+    "icon": "heart-pulse",
+    "order": 3
+  },
+  {
+    "id": "4",
+    "name": "Servicios",
+    "slug": "servicios",
+    "icon": "wrench",
+    "order": 4
+  }
+]

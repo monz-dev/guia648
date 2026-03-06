@@ -1,0 +1,32 @@
+---
+interface Props {
+  name: string;
+  slug: string;
+  description: string;
+  phone?: string;
+  logo_url?: string | null;
+  featured?: boolean;
+}
+
+const { name, slug, description, phone, logo_url, featured } = Astro.props;
+---
+
+<a
+  href={`/negocio/${slug}`}
+  class="block p-6 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-primary dark:hover:border-accent hover:shadow-lg transition-all"
+>
+  <div class="aspect-video rounded-lg bg-stone-200 dark:bg-stone-700 mb-4 flex items-center justify-center overflow-hidden">
+    {logo_url ? (
+      <img src={logo_url} alt={name} class="w-full h-full object-cover rounded-lg" />
+    ) : (
+      <span class="text-stone-400 text-sm">Sin imagen</span>
+    )}
+  </div>
+  <h3 class="font-bold text-lg text-stone-900 dark:text-white mb-2">{name}</h3>
+  <p class="text-sm text-stone-600 dark:text-stone-400 line-clamp-2">{description}</p>
+  {phone && (
+    <div class="mt-3 inline-flex items-center text-sm text-primary dark:text-accent">
+      📞 {phone}
+    </div>
+  )}
+</a>
