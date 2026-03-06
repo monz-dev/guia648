@@ -202,8 +202,8 @@ const pageDescription = `${business.name} - ${category?.name || 'Negocio'} en Ca
       </div>
 
       <!-- Reviews Section -->
-      <ReviewList client:only="react" reviews={[]} businessSlug={business.slug} />
-      <ReviewForm client:load businessSlug={business.slug} />
+      <ReviewList reviews={[]} businessSlug={business.slug} />
+      <ReviewForm businessSlug={business.slug} />
     </div>
   </main>
 
