@@ -1,0 +1,163 @@
+---
+interface Props {
+  businessSlug: string;
+}
+
+const { businessSlug } = Astro.props;
+---
+
+<div class="mt-8 p-6 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700">
+  <h3 class="text-lg font-semibold text-stone-900 dark:text-white mb-4">
+    Deja tu reseña
+  </h3>
+  
+  <form id="review-form" class="space-y-4">
+    <input type="hidden" name="business_slug" value={businessSlug} />
+    
+    <div>
+      <label for="author_name" class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+        Tu nombre
+      </label>
+      <input
+        type="text"
+        id="author_name"
+        name="author_name"
+        required
+        maxlength="100"
+        placeholder="Ej: Juan Pérez"
+        class="w-full px-4 py-2 rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-700 text-stone-900 dark:text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-accent"
+      />
+    </div>
+    
+    <div>
+      <label class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+        Tu rating
+      </label>
+      <div class="flex gap-1" id="star-rating">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            type="button"
+            class="star-btn p-1 text-stone-300 dark:text-stone-600 hover:text-yellow-400 transition-colors"
+            data-rating={star}
+            aria-label={`${star} estrella${star > 1 ? 's' : ''}`}
+          >
+            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+          </button>
+        ))}
+      </div>
+      <input type="hidden" id="rating-value" name="rating" value="0" required />
+    </div>
+    
+    <div>
+      <label for="comment" class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+        Tu reseña
+      </label>
+      <textarea
+        id="comment"
+        name="comment"
+        required
+        maxlength="500"
+        rows="3"
+        placeholder="Comparte tu experiencia con este negocio..."
+        class="w-full px-4 py-2 rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-700 text-stone-900 dark:text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-accent resize-none"
+      ></textarea>
+    </div>
+    
+    <button
+      type="submit"
+      class="w-full sm:w-auto px-6 py-2 bg-primary dark:bg-accent-dark text-white font-semibold rounded-lg hover:bg-primary-dark dark:hover:bg-accent transition-colors"
+    >
+      Enviar Reseña
+    </button>
+    
+    <p id="review-message" class="text-sm hidden"></p>
+  </form>
+</div>
+
+<script is:inline>
+  // Star rating interaction
+  (function() {
+    const starButtons = document.querySelectorAll('.star-btn');
+    const ratingInput = document.getElementById('rating-value');
+    let currentRating = 0;
+
+    function updateStars(rating) {
+      starButtons.forEach((btn, index) => {
+        const star = index + 1;
+        if (star <= rating) {
+          btn.classList.remove('text-stone-300', 'dark:text-stone-600');
+          btn.classList.add('text-yellow-400');
+        } else {
+          btn.classList.remove('text-yellow-400');
+          btn.classList.add('text-stone-300', 'dark:text-stone-600');
+        }
+      });
+    }
+
+    starButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        currentRating = parseInt(this.dataset.rating);
+        ratingInput.value = currentRating;
+        updateStars(currentRating);
+      });
+
+      btn.addEventListener('mouseenter', function() {
+        const hoverRating = parseInt(this.dataset.rating);
+        updateStars(hoverRating);
+      });
+
+      btn.addEventListener('mouseleave', function() {
+        updateStars(currentRating);
+      });
+    });
+
+    // Form submission
+    const form = document.getElementById('review-form');
+    const messageEl = document.getElementById('review-message');
+
+    form?.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const rating = parseInt(formData.get('rating'));
+
+      if (rating === 0) {
+        messageEl.textContent = 'Por favor selecciona un rating';
+        messageEl.classList.remove('hidden', 'text-green-600');
+        messageEl.classList.add('text-red-600');
+        return;
+      }
+
+      const reviewData = {
+        business_slug: formData.get('business_slug'),
+        author_name: formData.get('author_name'),
+        rating: rating,
+        comment: formData.get('comment'),
+        created_at: new Date().toISOString()
+      };
+
+      try {
+        // Get existing reviews from localStorage or initialize
+        const storedReviews = localStorage.getItem('reviews_' + reviewData.business_slug);
+        const reviews = storedReviews ? JSON.parse(storedReviews) : [];
+        
+        // Add new review
+        reviewData.id = Date.now().toString();
+        reviews.unshift(reviewData);
+        
+        // Save to localStorage
+        localStorage.setItem('reviews_' + reviewData.business_slug, JSON.stringify(reviews));
+        
+        // Reload to show new review
+        window.location.reload();
+      } catch (error) {
+        console.error('Error saving review:', error);
+        messageEl.textContent = 'Error al guardar la reseña. Intenta de nuevo.';
+        messageEl.classList.remove('hidden', 'text-green-600');
+        messageEl.classList.add('text-red-600');
+      }
+    });
+  })();
+</script>

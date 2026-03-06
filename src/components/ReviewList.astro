@@ -1,0 +1,117 @@
+---
+interface Review {
+  id: string;
+  business_slug: string;
+  author_name: string;
+  rating: number;
+  comment: string;
+  created_at: string;
+}
+
+interface Props {
+  reviews?: Review[];
+  businessSlug?: string;
+}
+
+const { reviews: initialReviews = [], businessSlug } = Astro.props;
+
+// This component will be hydrated on client-side to load reviews from localStorage
+---
+
+<div id="reviews-section" class="mt-12 border-t border-stone-200 dark:border-stone-700 pt-8">
+  <h2 class="text-2xl font-bold text-stone-900 dark:text-white mb-6">
+    Reseñas
+  </h2>
+  
+  <!-- Rating Summary -->
+  <div class="flex items-center gap-4 mb-8">
+    <div class="flex items-center gap-2">
+      <span id="rating-average" class="text-4xl font-bold text-stone-900 dark:text-white">0</span>
+      <div class="flex flex-col">
+        <div class="flex gap-0.5" id="rating-stars">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <svg 
+              class="w-5 h-5 text-stone-300 dark:text-stone-600"
+              id={`star-${star}`}
+              fill="currentColor" 
+              viewBox="0 0 20 20"
+            >
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+          ))}
+        </div>
+        <span id="review-count" class="text-sm text-stone-500 dark:text-stone-400">
+          0 reseñas
+        </span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Reviews List -->
+  <div id="reviews-container">
+    <p class="text-stone-500 dark:text-stone-400 text-center py-8">
+      No hay reseñas todavía. ¡Sé el primero en dejar una!
+    </p>
+  </div>
+</div>
+
+<script is:inline define:vars={{ businessSlug }}>
+  // Load reviews from localStorage client-side
+  (function loadReviews() {
+    if (!businessSlug) return;
+    
+    const storedReviews = localStorage.getItem('reviews_' + businessSlug);
+    const reviews = storedReviews ? JSON.parse(storedReviews) : [];
+    
+    const container = document.getElementById('reviews-container');
+    const averageEl = document.getElementById('rating-average');
+    const countEl = document.getElementById('review-count');
+    
+    if (reviews.length === 0) {
+      if (container) {
+        container.innerHTML = '<p class="text-stone-500 dark:text-stone-400 text-center py-8">No hay reseñas todavía. ¡Sé el primero en dejar una!</p>';
+      }
+      return;
+    }
+    
+    // Calculate average
+    const average = (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1);
+    
+    if (averageEl) averageEl.textContent = average;
+    if (countEl) countEl.textContent = reviews.length + ' reseñas';
+    
+    // Update stars
+    const roundedRating = Math.round(Number(average));
+    for (let i = 1; i <= 5; i++) {
+      const star = document.getElementById('star-' + i);
+      if (star) {
+        if (i <= roundedRating) {
+          star.classList.remove('text-stone-300', 'dark:text-stone-600');
+          star.classList.add('text-yellow-400');
+        } else {
+          star.classList.remove('text-yellow-400');
+          star.classList.add('text-stone-300', 'dark:text-stone-600');
+        }
+      }
+    }
+    
+    // Render reviews
+    if (container) {
+      container.innerHTML = reviews.map(function(review) {
+        const date = new Date(review.created_at).toLocaleDateString('es-MX', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+        
+        let starsHtml = '';
+        for (let i = 1; i <= 5; i++) {
+          const starClass = i <= review.rating ? 'text-yellow-400' : 'text-stone-300 dark:text-stone-600';
+          starsHtml += '<svg class="w-4 h-4 ' + starClass + '" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>';
+        }
+        
+        return '<div class="p-4 rounded-lg bg-stone-50 dark:bg-stone-800/50"><div class="flex items-center justify-between mb-2"><div class="flex items-center gap-2"><span class="font-medium text-stone-900 dark:text-white">' + review.author_name + '</span><div class="flex gap-0.5">' + starsHtml + '</div></div><time class="text-sm text-stone-400">' + date + '</time></div><p class="text-stone-600 dark:text-stone-300">' + review.comment + '</p></div>';
+      }).join('');
+    }
+  })();
+</script>

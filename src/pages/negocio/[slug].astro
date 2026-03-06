@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ThemeToggle from '../../components/ThemeToggle.astro';
+import ReviewList from '../../components/ReviewList.astro';
+import ReviewForm from '../../components/ReviewForm.astro';
 import categoriesData from '../../data/categories/categories.json';
 import businessesData from '../../data/businesses/businesses.json';
 
@@ -198,6 +200,10 @@ const pageDescription = `${business.name} - ${category?.name || 'Negocio'} en Ca
           )}
         </div>
       </div>
+
+      <!-- Reviews Section -->
+      <ReviewList client:only="react" reviews={[]} businessSlug={business.slug} />
+      <ReviewForm client:load businessSlug={business.slug} />
     </div>
   </main>
 
