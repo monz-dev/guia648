@@ -1,43 +1,101 @@
-# Astro Starter Kit: Minimal
+# Guia648 - Directorio Digital de Camargo, Chihuahua
 
-```sh
-npm create astro@latest -- --template minimal
+> Directorio digital de comercios y servicios locales de Camargo, Chih. 
+
+[![GitHub stars](https://img.shields.io/github/stars/monz-dev/guia648)](https://github.com/monz-dev/guia648)
+[![Build](https://img.shields.io/badge/Build-Astro%205.x-blue)](https://astro.build)
+
+## 📱 Preview
+
+Plataforma web tipo directorio diseñada para conectar habitantes y turistas con los comercios locales de Camargo, Chihuahua.
+
+### Características
+
+- 🏠 **Landing Page** - Hero con buscador y categorías
+- 🔍 **Buscador Inteligente** - Filtrado por nombre o etiquetas
+- 📂 **Directorio por Categorías** - Turismo, Gastronomía, Salud, Servicios
+- 📇 **Fichas de Negocio** - Llamada directa, WhatsApp, Google Maps
+- 🌙 **Dark/Light Mode** - Soporte completo con toggle manual
+- 📱 **Mobile-First** - Optimizado para celulares
+
+## 🛠️ Stack Tecnológico
+
+| Capa | Tecnología |
+|------|------------|
+| Frontend | Astro 5.x (SSG) |
+| Estilos | TailwindCSS 4 |
+| Backend | Supabase (DB + Auth) |
+| Icons | Lucide |
+| Hosting | Hostgator (estático) |
+| Admin | Vercel |
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- npm 9+
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/monz-dev/guia648.git
+cd guia648
+
+# Install dependencies
+npm install
+
+# Copy environment template
+cp .env.template .env
+
+# Start development server
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+### Environment Variables
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```env
+# Supabase
+PUBLIC_SUPABASE_URL=your_supabase_url
+PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+### Build for Production
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+```bash
+# Build static site
+npm run build
 
-Any static assets, like images, can be placed in the `public/` directory.
+# Preview build locally
+npm run preview
+```
 
-## 🧞 Commands
+The static output will be in `dist/` - ready to upload to Hostgator.
 
-All commands are run from the root of the project, from a terminal:
+## 📁 Project Structure
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+```
+src/
+├── components/       # UI components
+│   ├── BusinessCard.astro
+│   ├── BusinessList.astro
+│   ├── ThemeToggle.astro
+│   └── ...
+├── data/            # Static data (JSON)
+│   ├── businesses/
+│   └── categories/
+├── layouts/         # Page layouts
+├── lib/             # Utilities & clients
+│   ├── supabase.ts
+│   └── utils.ts
+├── pages/           # Routes
+│   ├── index.astro
+│   ├── directorio/[categoria].astro
+│   └── negocio/[slug].astro
+└── styles/          # Global styles
+```
 
-## 👀 Want to learn more?
+## 📄 License
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+MIT
