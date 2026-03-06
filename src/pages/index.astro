@@ -1,64 +1,113 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import ThemeToggle from '../components/ThemeToggle.astro';
-import categoriesData from '../data/categories/categories.json';
-import businessesData from '../data/businesses/businesses.json';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import categoriesData from "../data/categories/categories.json";
+import businessesData from "../data/businesses/businesses.json";
 
 const categories = categoriesData;
 const businesses = businessesData;
 ---
 
 <BaseLayout title="Inicio">
-  <header class="fixed top-0 w-full bg-white/80 dark:bg-sand-dark/80 backdrop-blur-md z-50 border-b border-stone-200 dark:border-stone-800">
+  <header
+    class="fixed top-0 w-full bg-white/80 dark:bg-sand-dark/80 backdrop-blur-md z-50 border-b border-stone-200 dark:border-stone-800"
+  >
     <nav class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
       <a href="/" class="text-xl font-bold text-primary dark:text-accent">
         Guia648
       </a>
-      
+
       <!-- Desktop Menu -->
       <div class="hidden md:flex items-center gap-4">
-        <a href="/" class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+        <a
+          href="/"
+          class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors"
+        >
           Inicio
         </a>
-        <a href="/directorio/turismo" class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+        <a
+          href="/directorio/turismo"
+          class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors"
+        >
           Turismo
         </a>
-        <a href="/directorio/gastronomia" class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+        <a
+          href="/directorio/gastronomia"
+          class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors"
+        >
           Gastronomía
         </a>
-        <a href="/directorio/salud" class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+        <a
+          href="/directorio/salud"
+          class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors"
+        >
           Salud
         </a>
-        <a href="/directorio/servicios" class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+        <a
+          href="/directorio/servicios"
+          class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors"
+        >
           Servicios
         </a>
         <ThemeToggle />
       </div>
 
       <!-- Mobile Menu Button -->
-      <button id="mobile-menu-btn" class="md:hidden p-2 text-stone-600 dark:text-stone-300" aria-label="Abrir menú">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      <button
+        id="mobile-menu-btn"
+        class="md:hidden p-2 text-stone-200 dark:text-stone-800"
+        aria-label="Abrir menú"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
       </button>
     </nav>
 
     <!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-sand-dark border-t border-stone-200 dark:border-stone-800">
+    <div
+      id="mobile-menu"
+      class="hidden md:hidden bg-white dark:bg-sand-dark border-t border-stone-200 dark:border-stone-800"
+    >
       <div class="px-4 py-3 space-y-2">
-        <a href="/" class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+        <a
+          href="/"
+          class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors"
+        >
           🏠 Inicio
         </a>
-        <a href="/directorio/turismo" class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+        <a
+          href="/directorio/turismo"
+          class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors"
+        >
           🏨 Turismo
         </a>
-        <a href="/directorio/gastronomia" class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+        <a
+          href="/directorio/gastronomia"
+          class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors"
+        >
           🍽️ Gastronomía
         </a>
-        <a href="/directorio/salud" class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+        <a
+          href="/directorio/salud"
+          class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors"
+        >
           ❤️ Salud
         </a>
-        <a href="/directorio/servicios" class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+        <a
+          href="/directorio/servicios"
+          class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors"
+        >
           🔧 Servicios
         </a>
         <div class="pt-2 border-t border-stone-200 dark:border-stone-700">
@@ -69,45 +118,55 @@ const businesses = businessesData;
   </header>
 
   <script>
-    const menuBtn = document.getElementById('mobile-menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
+    const menuBtn = document.getElementById("mobile-menu-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
 
-    menuBtn?.addEventListener('click', () => {
-      mobileMenu?.classList.toggle('hidden');
+    menuBtn?.addEventListener("click", () => {
+      mobileMenu?.classList.toggle("hidden");
     });
 
     // Close menu when clicking a link
-    mobileMenu?.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.add('hidden');
+    mobileMenu?.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        mobileMenu.classList.add("hidden");
       });
     });
   </script>
 
   <main>
     <!-- Hero Section -->
-    <section class="relative h-[60vh] md:h-[70vh] min-h-[400px] md:min-h-[500px] flex items-center justify-center overflow-hidden">
+    <section
+      class="relative h-[60vh] md:h-[70vh] min-h-[400px] md:min-h-[500px] flex items-center justify-center overflow-hidden"
+    >
       <!-- Hero Image -->
       <div class="absolute inset-0">
-        <img 
-          src="/images/hero/hero.webp" 
-          alt="Camargo, Chihuahua" 
+        <img
+          src="/images/hero/hero.webp"
+          alt="Camargo, Chihuahua"
           class="w-full h-full object-cover"
         />
         <!-- Overlay -->
         <div class="absolute inset-0 bg-black/40 md:bg-black/50"></div>
       </div>
-      
+
       <div class="relative z-10 text-center px-4 max-w-3xl mx-auto">
-        <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 text-white drop-shadow-lg">
+        <h1
+          class="text-3xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 text-white drop-shadow-lg"
+        >
           Descubre Camargo
         </h1>
-        <p class="text-base md:text-lg lg:text-xl mb-6 md:mb-8 text-white/90 drop-shadow-md">
+        <p
+          class="text-base md:text-lg lg:text-xl mb-6 md:mb-8 text-white/90 drop-shadow-md"
+        >
           El directorio de comercios y servicios locales
         </p>
-        
+
         <!-- Search Bar -->
-        <form action="/buscar" method="get" class="flex flex-col sm:flex-row gap-2 sm:gap-2 max-w-xl mx-auto">
+        <form
+          action="/buscar"
+          method="get"
+          class="flex flex-col sm:flex-row gap-2 sm:gap-2 max-w-xl mx-auto"
+        >
           <input
             type="search"
             name="q"
@@ -126,54 +185,85 @@ const businesses = businessesData;
 
     <!-- Categories Section -->
     <section class="py-16 px-4 max-w-7xl mx-auto">
-      <h2 class="text-2xl md:text-3xl font-bold text-center mb-12 text-stone-900 dark:text-white">
+      <h2
+        class="text-2xl md:text-3xl font-bold text-center mb-12 text-stone-900 dark:text-white"
+      >
         Explora por Categoría
       </h2>
-      
+
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {categories.map((category) => (
-          <a
-            href={`/directorio/${category.slug}`}
-            class="p-6 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-primary dark:hover:border-accent hover:shadow-lg transition-all text-center"
-          >
-            <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 dark:bg-accent-dark/10 flex items-center justify-center">
-              <span class="text-2xl">{category.icon === 'map' ? '🗺️' : category.icon === 'utensils' ? '🍽️' : category.icon === 'heart-pulse' ? '❤️' : '🔧'}</span>
-            </div>
-            <h3 class="font-semibold text-stone-900 dark:text-white">{category.name}</h3>
-          </a>
-        ))}
+        {
+          categories.map((category) => (
+            <a
+              href={`/directorio/${category.slug}`}
+              class="p-6 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-primary dark:hover:border-accent hover:shadow-lg transition-all text-center"
+            >
+              <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 dark:bg-accent-dark/10 flex items-center justify-center">
+                <span class="text-2xl">
+                  {category.icon === "map"
+                    ? "🗺️"
+                    : category.icon === "utensils"
+                      ? "🍽️"
+                      : category.icon === "heart-pulse"
+                        ? "❤️"
+                        : "🔧"}
+                </span>
+              </div>
+              <h3 class="font-semibold text-stone-900 dark:text-white">
+                {category.name}
+              </h3>
+            </a>
+          ))
+        }
       </div>
     </section>
 
     <!-- Featured Businesses -->
     <section class="py-16 px-4 bg-stone-100 dark:bg-stone-900">
       <div class="max-w-7xl mx-auto">
-        <h2 class="text-2xl md:text-3xl font-bold text-center mb-12 text-stone-900 dark:text-white">
+        <h2
+          class="text-2xl md:text-3xl font-bold text-center mb-12 text-stone-900 dark:text-white"
+        >
           Negocios Destacados
         </h2>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {businesses.filter(b => b.featured).map((business) => (
-            <a
-              href={`/negocio/${business.slug}`}
-              class="block p-6 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-primary dark:hover:border-accent hover:shadow-lg transition-all"
-            >
-              <div class="aspect-video rounded-lg bg-stone-200 dark:bg-stone-700 mb-4 flex items-center justify-center">
-                {business.logo_url ? (
-                  <img src={business.logo_url} alt={business.name} class="w-full h-full object-cover rounded-lg" />
-                ) : (
-                  <span class="text-stone-400">Sin imagen</span>
-                )}
-              </div>
-              <h3 class="font-bold text-lg text-stone-900 dark:text-white mb-2">{business.name}</h3>
-              <p class="text-sm text-stone-600 dark:text-stone-400 line-clamp-2">{business.description}</p>
-              {business.phone && (
-                <a href={`tel:${business.phone}`} class="mt-3 inline-flex items-center text-sm text-primary dark:text-accent hover:underline">
-                  📞 {business.phone}
+          {
+            businesses
+              .filter((b) => b.featured)
+              .map((business) => (
+                <a
+                  href={`/negocio/${business.slug}`}
+                  class="block p-6 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-primary dark:hover:border-accent hover:shadow-lg transition-all"
+                >
+                  <div class="aspect-video rounded-lg bg-stone-200 dark:bg-stone-700 mb-4 flex items-center justify-center">
+                    {business.logo_url ? (
+                      <img
+                        src={business.logo_url}
+                        alt={business.name}
+                        class="w-full h-full object-cover rounded-lg"
+                      />
+                    ) : (
+                      <span class="text-stone-400">Sin imagen</span>
+                    )}
+                  </div>
+                  <h3 class="font-bold text-lg text-stone-900 dark:text-white mb-2">
+                    {business.name}
+                  </h3>
+                  <p class="text-sm text-stone-600 dark:text-stone-400 line-clamp-2">
+                    {business.description}
+                  </p>
+                  {business.phone && (
+                    <a
+                      href={`tel:${business.phone}`}
+                      class="mt-3 inline-flex items-center text-sm text-primary dark:text-accent hover:underline"
+                    >
+                      📞 {business.phone}
+                    </a>
+                  )}
                 </a>
-              )}
-            </a>
-          ))}
+              ))
+          }
         </div>
       </div>
     </section>
@@ -181,8 +271,12 @@ const businesses = businessesData;
 
   <footer class="py-8 px-4 bg-stone-900 text-stone-400">
     <div class="max-w-7xl mx-auto text-center">
-      <p class="mb-2">© 2024 Guia648 - Directorio Digital de Camargo, Chihuahua</p>
-      <p class="text-sm">Conectando residentes y turistas con los mejores comercios locales</p>
+      <p class="mb-2">
+        © 2024 Guia648 - Directorio Digital de Camargo, Chihuahua
+      </p>
+      <p class="text-sm">
+        Conectando residentes y turistas con los mejores comercios locales
+      </p>
     </div>
   </footer>
 </BaseLayout>
