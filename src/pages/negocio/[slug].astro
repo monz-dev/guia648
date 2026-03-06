@@ -27,11 +27,25 @@ const jsonLd = {
   },
   "telephone": business.phone ? `+52${business.phone}` : undefined,
   "url": `https://guia648.com/negocio/${business.slug}`,
-  "image": business.logo_url
+  "image": business.logo_url,
+  "priceRange": "$$",
+  "openingHours": "Mo-Su",
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 27.69,
+    "longitude": -105.49
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "Camargo"
+  },
+  "category": category?.name
 };
+
+const pageDescription = `${business.name} - ${category?.name || 'Negocio'} en Camargo, Chihuahua. ${business.description || 'Visítanos en Guia648.com'}`;
 ---
 
-<BaseLayout title={business.name} description={business.description}>
+<BaseLayout title={business.name} description={pageDescription} image={business.logo_url || undefined}>
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
   <header class="fixed top-0 w-full bg-white/80 dark:bg-sand-dark/80 backdrop-blur-md z-50 border-b border-stone-200 dark:border-stone-800">

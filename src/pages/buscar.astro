@@ -9,9 +9,13 @@ const categories = categoriesData;
 const businesses = businessesData;
 
 const query = Astro.url.searchParams.get('q') || '';
+
+const pageDescription = query 
+  ? `Resultados de búsqueda para "${query}" en Camargo, Chihuahua`
+  : "Buscar negocios, restaurantes, hoteles, servicios y más en Camargo, Chihuahua";
 ---
 
-<BaseLayout title="Buscar" description={`Resultados de búsqueda para "${query}"`}>
+<BaseLayout title="Buscar" description={pageDescription}>
   <header class="fixed top-0 w-full bg-white/80 dark:bg-sand-dark/80 backdrop-blur-md z-50 border-b border-stone-200 dark:border-stone-800">
     <nav class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
       <a href="/" class="text-xl font-bold text-primary dark:text-accent">

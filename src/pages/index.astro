@@ -6,9 +6,32 @@ import businessesData from "../data/businesses/businesses.json";
 
 const categories = categoriesData;
 const businesses = businessesData;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Guia648 - Directorio de Camargo",
+  "description": "Directorio digital de comercios y servicios de Camargo, Chihuahua. Encuentra turismo, gastronomía, salud y más.",
+  "url": "https://guia648.com",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://guia648.com/buscar?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "Camargo",
+    "addressRegion": "Chihuahua",
+    "addressCountry": "MX"
+  }
+};
 ---
 
-<BaseLayout title="Inicio">
+<BaseLayout 
+  title="Inicio"
+  description="Directorio digital de Camargo, Chihuahua. Encuentra turismo, gastronomía, salud y servicios locales."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <header
     class="fixed top-0 w-full bg-white/80 dark:bg-sand-dark/80 backdrop-blur-md z-50 border-b border-stone-200 dark:border-stone-800"
   >

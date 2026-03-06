@@ -18,9 +18,18 @@ export function getStaticPaths() {
 
 const { category, allBusinesses } = Astro.props;
 const businesses = allBusinesses.filter((b) => b.category === category.slug);
+
+const categoryDescriptions: Record<string, string> = {
+  turismo: "Hoteles, atractivos turísticos y actividades en Camargo, Chihuahua.",
+  gastronomia: "Restaurantes, cafeterías y gastronomía local en Camargo, Chihuahua.",
+  salud: "Farmacias, clínicas y servicios de salud en Camargo, Chihuahua.",
+  servicios: "Talleres, profesionistas y servicios diversos en Camargo, Chihuahua."
+};
+
+const pageDescription = categoryDescriptions[category.slug] || `Negocios de ${category.name} en Camargo, Chihuahua.`;
 ---
 
-<BaseLayout title={`${category.name} - Directorio`}>
+<BaseLayout title={`${category.name}`} description={pageDescription}>
   <header class="fixed top-0 w-full bg-white/80 dark:bg-sand-dark/80 backdrop-blur-md z-50 border-b border-stone-200 dark:border-stone-800">
     <nav class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
       <a href="/" class="text-xl font-bold text-primary dark:text-accent">

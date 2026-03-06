@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://guia648.com/sitemap.xml
