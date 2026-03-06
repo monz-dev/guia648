@@ -4,9 +4,19 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  image?: string;
+  noIndex?: boolean;
 }
 
-const { title, description = 'Directorio digital de Camargo, Chihuahua' } = Astro.props;
+const { 
+  title, 
+  description = 'Directorio digital de Camargo, Chihuahua. Encuentra turismo, gastronomía, salud y servicios locales.',
+  image = '/images/og-default.png',
+  noIndex = false
+} = Astro.props;
+
+const siteUrl = 'https://guia648.com';
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 ---
 
 <!doctype html>
@@ -14,9 +24,41 @@ const { title, description = 'Directorio digital de Camargo, Chihuahua' } = Astr
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Primary Meta Tags -->
     <title>{title} | Guia648</title>
+    <meta name="title" content={`${title} | Guia648`} />
+    <meta name="description" content={description} />
+    <meta name="robots" content={noIndex ? 'noindex, nofollow' : 'index, follow'} />
+    <meta name="author" content="Guia648" />
+    <meta name="generator" content="Astro" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalUrl} />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={`${title} | Guia648`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${siteUrl}${image}`} />
+    <meta property="og:site_name" content="Guia648" />
+    <meta property="og:locale" content="es_MX" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalUrl} />
+    <meta name="twitter:title" content={`${title} | Guia648`} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${siteUrl}${image}`} />
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#8b7355" />
+    <meta name="msapplication-TileColor" content="#8b7355" />
     
     <!-- Prevent FOUC -->
     <script is:inline>
