@@ -27,7 +27,11 @@ const businesses = allBusinesses.filter((b) => b.category === category.slug);
         Guia648
       </a>
       
-      <div class="flex items-center gap-4">
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex items-center gap-4">
+        <a href="/" class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          Inicio
+        </a>
         <a href="/directorio/turismo" class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
           Turismo
         </a>
@@ -42,14 +46,57 @@ const businesses = allBusinesses.filter((b) => b.category === category.slug);
         </a>
         <ThemeToggle />
       </div>
+
+      <!-- Mobile Menu Button -->
+      <button id="mobile-menu-btn" class="md:hidden p-2 text-stone-600 dark:text-stone-300" aria-label="Abrir menú">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
     </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-sand-dark border-t border-stone-200 dark:border-stone-800">
+      <div class="px-4 py-3 space-y-2">
+        <a href="/" class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          🏠 Inicio
+        </a>
+        <a href="/directorio/turismo" class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          🏨 Turismo
+        </a>
+        <a href="/directorio/gastronomia" class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          🍽️ Gastronomía
+        </a>
+        <a href="/directorio/salud" class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          ❤️ Salud
+        </a>
+        <a href="/directorio/servicios" class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
+          🔧 Servicios
+        </a>
+        <div class="pt-2 border-t border-stone-200 dark:border-stone-700">
+          <ThemeToggle />
+        </div>
+      </div>
+    </div>
   </header>
+
+  <script>
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    menuBtn?.addEventListener('click', () => {
+      mobileMenu?.classList.toggle('hidden');
+    });
+
+    mobileMenu?.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+      });
+    });
+  </script>
 
   <main class="pt-24 pb-16 px-4 max-w-7xl mx-auto">
     <div class="mb-8">
-      <a href="/" class="text-primary dark:text-accent hover:underline text-sm mb-4 inline-block">
-        ← Volver al inicio
-      </a>
       <h1 class="text-3xl md:text-4xl font-bold text-stone-900 dark:text-white mb-2">
         {category.name}
       </h1>
