@@ -13,40 +13,33 @@ import { Sun, Moon } from '@lucide/astro';
 
 <script is:inline>
   // Initialize theme on load
-  (function() {
-    const theme = localStorage.getItem('theme') || 
-      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  (function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = savedTheme || (prefersDark ? 'dark' : 'light');
     
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
     }
+    localStorage.setItem('theme', theme);
   })();
 
-  // Toggle function
-  function toggleTheme() {
-    const element = document.documentElement;
-    const isDark = element.classList.contains('dark');
-    
-    if (isDark) {
-      element.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    } else {
-      element.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
+  // Toggle function - using event delegation on document
+  function handleThemeToggle(e) {
+    if (e.target.closest('.theme-toggle')) {
+      const element = document.documentElement;
+      const isDark = element.classList.contains('dark');
+      
+      if (isDark) {
+        element.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        element.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
     }
   }
 
-  // Attach to all theme-toggle buttons
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.theme-toggle').forEach(function(btn) {
-      btn.addEventListener('click', toggleTheme);
-    });
-  });
-
-  // Also try immediately in case DOM already loaded
-  document.querySelectorAll('.theme-toggle').forEach(function(btn) {
-    btn.addEventListener('click', toggleTheme);
-  });
+  // Use event delegation - more reliable
+  document.addEventListener('click', handleThemeToggle);
 </script>
