@@ -93,24 +93,37 @@ const query = Astro.url.searchParams.get('q') || '';
       </h1>
       
       <!-- Search Form -->
-      <form action="/buscar" method="get" class="flex gap-2 max-w-xl">
+      <div class="relative">
         <input
           type="search"
+          id="search-input"
           name="q"
           value={query}
           placeholder="Buscar: nuts, restaurant, pharmacy..."
-          class="flex-1 px-4 py-3 rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 text-stone-900 dark:text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-accent"
+          class="w-full md:w-auto md:min-w-[300px] px-4 py-3 rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 text-stone-900 dark:text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-accent"
           autofocus
         />
+      </div>
+      
+      <!-- Category Filters -->
+      <div class="mt-4 flex flex-wrap gap-2">
         <button
-          type="submit"
-          class="px-6 py-3 bg-primary dark:bg-accent-dark text-white font-semibold rounded-lg hover:bg-primary-dark dark:hover:bg-accent transition-colors"
+          class="filter-btn active px-3 py-1.5 rounded-full text-sm font-medium border transition-colors"
+          data-category="all"
         >
-          Buscar
+          Todos
         </button>
-      </form>
+        {categories.map((category) => (
+          <button
+            class="filter-btn px-3 py-1.5 rounded-full text-sm font-medium border border-stone-300 dark:border-stone-600 text-stone-600 dark:text-stone-400 hover:border-primary dark:hover:border-accent transition-colors"
+            data-category={category.slug}
+          >
+            {category.name}
+          </button>
+        ))}
+      </div>
     </div>
-
+    
     <!-- Results Section -->
     <div id="results">
       {query && (
@@ -141,7 +154,7 @@ const query = Astro.url.searchParams.get('q') || '';
         <h2 class="text-2xl font-bold text-stone-900 dark:text-white mb-6">
           Todos los Negocios
         </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="all-businesses" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {businesses.map((business) => (
             <BusinessCard
               name={business.name}
@@ -164,11 +177,22 @@ const query = Astro.url.searchParams.get('q') || '';
     </div>
   </footer>
 
-  <!-- Search Script - Uses simple fuzzy matching without external dependencies -->
-  <script is:inline define:vars={{ query, businesses }}>
-    // Simple fuzzy search implementation (no external dependencies)
-    // Based on Levenshtein distance concept for typo tolerance
-    
+  <!-- Search Script - Real-time search with filters -->
+  <script is:inline define:vars={{ query, businesses, categories }}>
+    // Debounce function to limit search execution
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    // Fuzzy search implementation
     function fuzzyMatch(text, pattern) {
       if (!pattern) return { match: true, score: 0 };
       
@@ -198,7 +222,7 @@ const query = Astro.url.searchParams.get('q') || '';
         return { match: true, score: (matchedWords / patternWords.length) * 0.5 };
       }
       
-      // Check for fuzzy character match (typo tolerance)
+      // Fuzzy character match (typo tolerance)
       let patternIdx = 0;
       let consecutiveMatches = 0;
       
@@ -211,7 +235,6 @@ const query = Astro.url.searchParams.get('q') || '';
         }
       }
       
-      // Allow fuzzy match if at least 70% of pattern characters matched
       const fuzzyThreshold = Math.floor(pattern.length * 0.7);
       if (patternIdx >= fuzzyThreshold) {
         return { match: true, score: 0.3 };
@@ -220,27 +243,32 @@ const query = Astro.url.searchParams.get('q') || '';
       return { match: false, score: 0 };
     }
 
-    function searchBusinesses(query, businesses) {
-      if (!query || query.trim() === '') {
+    function searchBusinesses(searchQuery, categoryFilter) {
+      // If no query and no filter, return all
+      if ((!searchQuery || searchQuery.trim() === '') && categoryFilter === 'all') {
         return businesses.map(b => ({ item: b, score: 1 }));
       }
       
       const results = [];
-      const searchTerms = query.toLowerCase().split(/\s+/).filter(Boolean);
+      const searchTerms = searchQuery ? searchQuery.toLowerCase().split(/\s+/).filter(Boolean) : [];
       
       for (const business of businesses) {
-        // Search across name, description, category, and tags
+        // Filter by category first
+        if (categoryFilter !== 'all' && business.category !== categoryFilter) {
+          continue;
+        }
+        
+        // If no search query, just add filtered businesses
+        if (searchTerms.length === 0) {
+          results.push({ item: business, score: 1 });
+          continue;
+        }
+        
+        // Search across name, description, category
         const searchableText = [
           business.name,
           business.description || '',
           business.category,
-          // Add common tags
-          ...(business.name.toLowerCase().split(' ')),
-          business.category,
-          business.name.includes('nuez') ? 'nuez' : '',
-          business.name.includes('hotel') ? 'hotel' : '',
-          business.name.includes('casa') ? 'casa' : '',
-          business.name.includes('mariscos') ? 'mariscos' : '',
         ].filter(Boolean).join(' ');
         
         let bestScore = 0;
@@ -262,54 +290,131 @@ const query = Astro.url.searchParams.get('q') || '';
       return results;
     }
 
-    // Search function
-    function performSearch(searchQuery) {
-      if (!searchQuery || searchQuery.trim() === '') {
-        // Show all businesses when no query
-        document.getElementById('results-count')?.classList.add('hidden');
-        document.getElementById('no-results')?.classList.add('hidden');
-        document.getElementById('results-list').innerHTML = '';
-        return;
-      }
-
-      const results = searchBusinesses(searchQuery, businesses);
+    function highlightMatch(text, query) {
+      if (!query || !text) return text;
       
+      const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+      let result = text;
+      
+      terms.forEach(term => {
+        const regex = new RegExp(`(${term})`, 'gi');
+        result = result.replace(regex, '<mark class="bg-primary/20 dark:bg-accent-dark/20 px-0.5 rounded">$1</mark>');
+      });
+      
+      return result;
+    }
+
+    function renderBusinessCard(business, query) {
+      const highlightedName = highlightMatch(business.name, query);
+      const highlightedDesc = highlightMatch(business.description || '', query);
+      
+      return `
+        <a href="/negocio/${business.slug}" class="block p-6 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-primary dark:hover:border-accent hover:shadow-lg transition-all">
+          <div class="aspect-video rounded-lg bg-stone-200 dark:bg-stone-700 mb-4 flex items-center justify-center overflow-hidden">
+            ${business.logo_url 
+              ? `<img src="${business.logo_url}" alt="${business.name}" class="w-full h-full object-cover rounded-lg" loading="lazy" />`
+              : `<span class="text-stone-400 text-sm">Sin imagen</span>`
+            }
+          </div>
+          <h3 class="font-bold text-lg text-stone-900 dark:text-white mb-2">${highlightedName}</h3>
+          <p class="text-sm text-stone-600 dark:text-stone-400 line-clamp-2">${highlightedDesc}</p>
+          ${business.phone ? `<div class="mt-3 inline-flex items-center text-sm text-primary dark:text-accent">📞 ${business.phone}</div>` : ''}
+        </a>
+      `;
+    }
+
+    // Current state
+    let currentQuery = '';
+    let currentCategory = 'all';
+
+    function performSearch() {
+      const searchInput = document.getElementById('search-input');
       const resultsList = document.getElementById('results-list');
       const resultsCount = document.getElementById('results-count');
       const noResults = document.getElementById('no-results');
-
+      const allBusinesses = document.getElementById('all-businesses');
+      
+      // Get current values
+      currentQuery = searchInput?.value || '';
+      
+      // Update URL without reload
+      const url = new URL(window.location.href);
+      if (currentQuery) {
+        url.searchParams.set('q', currentQuery);
+      } else {
+        url.searchParams.delete('q');
+      }
+      window.history.replaceState({}, '', url);
+      
+      const results = searchBusinesses(currentQuery, currentCategory);
+      
       if (results.length === 0) {
         resultsList.innerHTML = '';
-        resultsCount.classList.add('hidden');
-        noResults.classList.remove('hidden');
+        if (resultsCount) resultsCount.classList.add('hidden');
+        if (noResults) noResults.classList.remove('hidden');
+        if (allBusinesses) allBusinesses.classList.add('hidden');
         return;
       }
-
-      resultsCount.textContent = `${results.length} ${results.length === 1 ? 'resultado' : 'resultados'} encontrado${results.length !== 1 ? 's' : ''}`;
-      resultsCount.classList.remove('hidden');
-      noResults.classList.add('hidden');
-
-      resultsList.innerHTML = results.map(result => {
-        const b = result.item;
-        return `
-          <a href="/negocio/${b.slug}" class="block p-6 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-primary dark:hover:border-accent hover:shadow-lg transition-all">
-            <div class="aspect-video rounded-lg bg-stone-200 dark:bg-stone-700 mb-4 flex items-center justify-center overflow-hidden">
-              ${b.logo_url 
-                ? `<img src="${b.logo_url}" alt="${b.name}" class="w-full h-full object-cover rounded-lg" />`
-                : `<span class="text-stone-400 text-sm">Sin imagen</span>`
-              }
-            </div>
-            <h3 class="font-bold text-lg text-stone-900 dark:text-white mb-2">${b.name}</h3>
-            <p class="text-sm text-stone-600 dark:text-stone-400 line-clamp-2">${b.description || ''}</p>
-            ${b.phone ? `<div class="mt-3 inline-flex items-center text-sm text-primary dark:text-accent">📞 ${b.phone}</div>` : ''}
-          </a>
-        `;
-      }).join('');
+      
+      if (resultsCount) {
+        resultsCount.textContent = `${results.length} ${results.length === 1 ? 'resultado' : 'resultados'}`;
+        resultsCount.classList.remove('hidden');
+      }
+      if (noResults) noResults.classList.add('hidden');
+      if (allBusinesses) allBusinesses.classList.add('hidden');
+      
+      resultsList.innerHTML = results.map(r => renderBusinessCard(r.item, currentQuery)).join('');
     }
 
-    // Run search on page load if query exists
-    if (query) {
-      performSearch(query);
-    }
+    // Debounced search (300ms delay)
+    const debouncedSearch = debounce(performSearch, 300);
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchInput = document.getElementById('search-input');
+      const filterButtons = document.querySelectorAll('.filter-btn');
+      
+      // Search input event
+      if (searchInput) {
+        searchInput.addEventListener('input', function() {
+          debouncedSearch();
+        });
+        
+        // Also update results immediately on keyup for responsiveness
+        searchInput.addEventListener('keyup', function() {
+          // Instant search for better UX
+          performSearch();
+        });
+      }
+      
+      // Category filter buttons
+      filterButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          // Update active state
+          filterButtons.forEach(b => {
+            b.classList.remove('active', 'bg-primary', 'dark:bg-accent-dark', 'text-white', 'border-primary', 'dark:border-accent');
+            b.classList.add('border-stone-300', 'dark:border-stone-600', 'text-stone-600', 'dark:text-stone-400');
+          });
+          
+          this.classList.add('active', 'bg-primary', 'dark:bg-accent-dark', 'text-white', 'border-primary', 'dark:border-accent');
+          this.classList.remove('border-stone-300', 'dark:border-stone-600', 'text-stone-600', 'dark:text-stone-400');
+          
+          currentCategory = this.dataset.category;
+          performSearch();
+        });
+      });
+      
+      // Set initial active filter button
+      const activeBtn = document.querySelector('.filter-btn[data-category="all"]');
+      if (activeBtn) {
+        activeBtn.classList.add('active', 'bg-primary', 'dark:bg-accent-dark', 'text-white', 'border-primary', 'dark:border-accent');
+        activeBtn.classList.remove('border-stone-300', 'dark:border-stone-600', 'text-stone-600', 'dark:text-stone-400');
+      }
+      
+      // Initial search if query exists
+      if (query) {
+        performSearch();
+      }
+    });
   </script>
 </BaseLayout>
