@@ -24,19 +24,27 @@ import { Sun, Moon } from '@lucide/astro';
     localStorage.setItem('theme', theme);
   })();
 
-  // Handle clicks on any theme-toggle button
-  document.querySelectorAll('.theme-toggle').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      const html = document.documentElement;
-      const isDark = html.classList.contains('dark');
-      
-      if (isDark) {
-        html.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-      } else {
-        html.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-      }
+  // Handle clicks - wait for DOM to be ready
+  function attachHandlers() {
+    document.querySelectorAll('.theme-toggle').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const html = document.documentElement;
+        const isDark = html.classList.contains('dark');
+        
+        if (isDark) {
+          html.classList.remove('dark');
+          localStorage.setItem('theme', 'light');
+        } else {
+          html.classList.add('dark');
+          localStorage.setItem('theme', 'dark');
+        }
+      });
     });
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', attachHandlers);
+  } else {
+    attachHandlers();
+  }
 </script>
