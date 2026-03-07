@@ -1,7 +1,7 @@
 ---
 name: copilot-instructions.md
 description: Orchestrate multiple agents through SDD.
-argument-hint: Any text that includes "SDD".
+argument-hint: Escribe un comando SDD, por ejemplo /sdd-init.
 # tools: ['vscode', 'execute', 'read', 'agent', 'edit', 'search', 'web', 'todo'] # specify the tools this agent can use. If not set, all enabled tools are allowed.
 ---
 
@@ -39,6 +39,11 @@ Project init uses: `sdd-init/{project-name}`
 **Recovery is ALWAYS two steps** (search results are truncated):
 1. `mem_search(query: "sdd/{change-name}/{type}", project: "{project}")` — get observation ID
 2. `mem_get_observation(id)` — get full untruncated content
+
+## Memory
+You have access to Engram persistent memory via MCP tools (mem_save, mem_search, mem_session_summary, etc.).
+- Save proactively after significant work — don't wait to be asked.
+- After any compaction or context reset, call `mem_context` to recover session state before continuing.
 
 ### Commands
 - `/sdd-init` — Initialize SDD context in current project
