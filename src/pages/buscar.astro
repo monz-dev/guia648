@@ -9,8 +9,9 @@ const categories = categoriesData;
 const businesses = businessesData;
 
 const query = Astro.url.searchParams.get('q') || '';
+const categoryFilter = Astro.url.searchParams.get('categoria') || 'all';
 
-const pageDescription = query 
+const pageDescription = query
   ? `Resultados de búsqueda para "${query}" en Camargo, Chihuahua`
   : "Buscar negocios, restaurantes, hoteles, servicios y más en Camargo, Chihuahua";
 ---
@@ -130,26 +131,22 @@ const pageDescription = query
     
     <!-- Results Section -->
     <div id="results">
-      {query && (
-        <p class="text-stone-600 dark:text-stone-400 mb-6" id="results-count">
-          Buscando...
-        </p>
-      )}
-      
+      <p class="text-stone-600 dark:text-stone-400 mb-6" id="results-count" style="display: none;">
+        Buscando...
+      </p>
+
       <div id="results-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Results populated by JavaScript -->
       </div>
 
-      {query && (
-        <div id="no-results" class="hidden text-center py-12">
-          <p class="text-xl text-stone-600 dark:text-stone-400 mb-4">
-            No se encontraron negocios para "{query}"
-          </p>
-          <p class="text-stone-500 dark:text-stone-500">
-            Intenta con otros términos de búsqueda
-          </p>
-        </div>
-      )}
+      <div id="no-results" class="hidden text-center py-12">
+        <p class="text-xl text-stone-600 dark:text-stone-400 mb-4">
+          No se encontraron negocios
+        </p>
+        <p class="text-stone-500 dark:text-stone-500">
+          Intenta con otros términos de búsqueda
+        </p>
+      </div>
     </div>
 
     <!-- All Businesses (shown when no query) -->
@@ -182,8 +179,82 @@ const pageDescription = query
   </footer>
 
   <!-- Search Script - Real-time search with filters -->
-  <script is:inline define:vars={{ query, businesses, categories }}>
-    // Debounce function to limit search execution
+  <script is:inline define:vars={{ businesses }}>
+    // Get query from URL parameter (more reliable than define:vars)
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get('q') || '';
+    
+    /**
+     * Normalize string for search operations
+     * Removes accents, converts to lowercase, and trims whitespace
+     */
+    function normalizeString(text) {
+      if (!text) return '';
+      return text
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Remove accents
+        .trim();
+    }
+
+    /**
+     * Score a single match between text and pattern
+     * Returns a score from 0 to 1 based on match type
+     */
+    function scoreMatch(text, pattern) {
+      if (!pattern || !text) return 0;
+
+      const normalizedText = normalizeString(text);
+      const normalizedPattern = normalizeString(pattern);
+
+      // Exact match
+      if (normalizedText === normalizedPattern) return 1.0;
+
+      // Prefix match
+      const words = normalizedText.split(/\s+/);
+      if (words.some(word => word.startsWith(normalizedPattern))) return 0.9;
+
+      // Substring match only for patterns >= 3 characters
+      if (pattern.length >= 3 && normalizedText.includes(normalizedPattern)) return 0.7;
+
+      // Fuzzy match only for patterns >= 3 characters
+      if (pattern.length >= 3) {
+        return calculateFuzzyScore(normalizedText, normalizedPattern);
+      }
+
+      return 0;
+    }
+
+    /**
+     * Calculate fuzzy match score
+     * More restrictive: requires 70%+ character matching to qualify
+     */
+    function calculateFuzzyScore(text, pattern) {
+      let patternIdx = 0;
+      let consecutiveMatches = 0;
+
+      for (let i = 0; i < text.length && patternIdx < pattern.length; i++) {
+        if (text[i] === pattern[patternIdx]) {
+          consecutiveMatches++;
+          patternIdx++;
+        } else if (consecutiveMatches > 0) {
+          consecutiveMatches -= 0.5;
+        }
+      }
+
+      // Require 70%+ of pattern characters to match (back to 70%)
+      const threshold = Math.ceil(pattern.length * 0.7);
+      if (patternIdx >= threshold) {
+        const score = (patternIdx / pattern.length) * 0.4;
+        // Return actual score (no minimum floor) - require real fuzzy match
+        return score > 0.3 ? score : 0;
+      }
+      return 0;
+    }
+
+    /**
+     * Debounce function to limit search execution
+     */
     function debounce(func, wait) {
       let timeout;
       return function executedFunction(...args) {
@@ -196,128 +267,105 @@ const pageDescription = query
       };
     }
 
-    // Fuzzy search implementation
-    function fuzzyMatch(text, pattern) {
-      if (!pattern) return { match: true, score: 0 };
-      
-      text = text.toLowerCase();
-      pattern = pattern.toLowerCase();
-      
-      // Exact match
-      if (text.includes(pattern)) {
-        return { match: true, score: 1 - (pattern.length / text.length) };
-      }
-      
-      // Check for partial word matches
-      const textWords = text.split(/\s+/);
-      const patternWords = pattern.split(/\s+/);
-      
-      let matchedWords = 0;
-      for (const pw of patternWords) {
-        for (const tw of textWords) {
-          if (tw.includes(pw) || pw.includes(tw)) {
-            matchedWords++;
-            break;
-          }
-        }
-      }
-      
-      if (matchedWords > 0) {
-        return { match: true, score: (matchedWords / patternWords.length) * 0.5 };
-      }
-      
-      // Fuzzy character match (typo tolerance)
-      let patternIdx = 0;
-      let consecutiveMatches = 0;
-      
-      for (let i = 0; i < text.length && patternIdx < pattern.length; i++) {
-        if (text[i] === pattern[patternIdx]) {
-          consecutiveMatches++;
-          patternIdx++;
-        } else if (consecutiveMatches > 0) {
-          consecutiveMatches--;
-        }
-      }
-      
-      const fuzzyThreshold = Math.floor(pattern.length * 0.7);
-      if (patternIdx >= fuzzyThreshold) {
-        return { match: true, score: 0.3 };
-      }
-      
-      return { match: false, score: 0 };
-    }
-
+    /**
+     * Search businesses with AND logic for multi-term queries
+     */
     function searchBusinesses(searchQuery, categoryFilter) {
       // If no query and no filter, return all
       if ((!searchQuery || searchQuery.trim() === '') && categoryFilter === 'all') {
         return businesses.map(b => ({ item: b, score: 1 }));
       }
-      
+
       const results = [];
-      const searchTerms = searchQuery ? searchQuery.toLowerCase().split(/\s+/).filter(Boolean) : [];
-      
+      const searchTerms = searchQuery
+        ? searchQuery.toLowerCase().split(/\s+/).filter(Boolean)
+        : [];
+
       for (const business of businesses) {
-        // Filter by category first
-        if (categoryFilter !== 'all' && business.category !== categoryFilter) {
-          continue;
+        // Filter by category first - handle missing category gracefully
+        if (categoryFilter !== 'all') {
+          const businessCategory = business.category || '';
+          if (businessCategory !== categoryFilter) {
+            continue;
+          }
         }
-        
+
         // If no search query, just add filtered businesses
         if (searchTerms.length === 0) {
           results.push({ item: business, score: 1 });
           continue;
         }
-        
-        // Search across name, description, category
+
+        // Build searchable text
         const searchableText = [
           business.name,
           business.description || '',
-          business.category,
-        ].filter(Boolean).join(' ');
-        
-        let bestScore = 0;
-        
+          business.category || '',
+        ]
+          .filter(Boolean)
+          .join(' ');
+
+        // AND logic: all terms must match
+        let totalScore = 0;
+        let allTermsMatch = true;
+
         for (const term of searchTerms) {
-          const result = fuzzyMatch(searchableText, term);
-          if (result.match) {
-            bestScore = Math.max(bestScore, result.score);
+          const termScore = scoreMatch(searchableText, term);
+          if (termScore < 0.2) { // MIN_THRESHOLD back to 0.2
+            allTermsMatch = false;
+            break;
           }
+          totalScore += termScore;
         }
-        
-        if (bestScore > 0) {
-          results.push({ item: business, score: bestScore });
+
+        if (allTermsMatch) {
+          const averageScore = totalScore / searchTerms.length;
+          results.push({ item: business, score: averageScore });
         }
       }
-      
+
       // Sort by score descending
       results.sort((a, b) => b.score - a.score);
       return results;
     }
 
-    function highlightMatch(text, query) {
-      if (!query || !text) return text;
-      
-      const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+    /**
+     * Highlight matching terms in text
+     */
+    function highlightMatches(text, searchTerms) {
+      if (!text || searchTerms.length === 0) return text;
+
       let result = text;
-      
-      terms.forEach(term => {
-        const regex = new RegExp(`(${term})`, 'gi');
-        result = result.replace(regex, '<mark class="bg-primary/20 dark:bg-accent-dark/20 px-0.5 rounded">$1</mark>');
-      });
-      
+      const processedTerms = new Set();
+
+      for (const term of searchTerms) {
+        if (processedTerms.has(term)) continue;
+        processedTerms.add(term);
+
+        const normalizedTerm = normalizeString(term);
+        const escapedTerm = normalizedTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`\\b${escapedTerm}\\b`, 'gi');
+        result = result.replace(regex, '<mark class="bg-yellow-200 dark:bg-yellow-900 px-0.5 rounded">$&</mark>');
+      }
+
       return result;
     }
 
+    /**
+     * Render a single business card with highlighting
+     */
     function renderBusinessCard(business, query) {
-      const highlightedName = highlightMatch(business.name, query);
-      const highlightedDesc = highlightMatch(business.description || '', query);
-      
+      const searchTerms = query ? query.split(/\s+/).filter(Boolean) : [];
+      const highlightedName = searchTerms.length > 0 ? highlightMatches(business.name, searchTerms) : business.name;
+      const highlightedDesc = searchTerms.length > 0 ? highlightMatches(business.description || '', searchTerms) : (business.description || '');
+
       return `
         <a href="/negocio/${business.slug}" class="block p-6 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-primary dark:hover:border-accent hover:shadow-lg transition-all">
           <div class="aspect-video rounded-lg bg-stone-200 dark:bg-stone-700 mb-4 flex items-center justify-center overflow-hidden">
-            ${business.logo_url 
-              ? `<img src="${business.logo_url}" alt="${business.name}" class="w-full h-full object-cover rounded-lg" loading="lazy" />`
-              : `<span class="text-stone-400 text-sm">Sin imagen</span>`
+            ${
+              business.logo_url
+                ? `<img src="${business.logo_url}" alt="${business.name}" class="w-full h-full object-cover rounded-lg" loading="lazy" />`
+                : `<span class="text-stone-400 text-sm">Sin imagen</span>`
             }
           </div>
           <h3 class="font-bold text-lg text-stone-900 dark:text-white mb-2">${highlightedName}</h3>
@@ -331,94 +379,128 @@ const pageDescription = query
     let currentQuery = '';
     let currentCategory = 'all';
 
-    function performSearch() {
+    /**
+     * Perform the actual search and update results display
+     * @param {boolean} isInitialSearch - Whether this is the initial search from URL parameter
+     */
+    function performSearch(isInitialSearch = false) {
+      console.log('🔎 performSearch called, isInitialSearch:', isInitialSearch, 'currentQuery:', currentQuery);
+
       const searchInput = document.getElementById('search-input');
       const resultsList = document.getElementById('results-list');
       const resultsCount = document.getElementById('results-count');
       const noResults = document.getElementById('no-results');
       const allBusinesses = document.getElementById('all-businesses');
-      
-      // Get current values
-      currentQuery = searchInput?.value || '';
-      
-      // Update URL without reload
-      const url = new URL(window.location.href);
-      if (currentQuery) {
-        url.searchParams.set('q', currentQuery);
-      } else {
-        url.searchParams.delete('q');
+
+      // For initial search from URL, use currentQuery (already set)
+      // For live search while typing, read from input field
+      if (!isInitialSearch && searchInput) {
+        currentQuery = searchInput.value || '';
       }
-      window.history.replaceState({}, '', url);
-      
+
+      console.log('📊 Final query to search:', currentQuery);
+
+      // Update URL without reload (only for live search, not initial)
+      if (!isInitialSearch) {
+        const url = new URL(window.location.href);
+        if (currentQuery) {
+          url.searchParams.set('q', currentQuery);
+        } else {
+          url.searchParams.delete('q');
+        }
+        window.history.replaceState({}, '', url);
+      }
+
       const results = searchBusinesses(currentQuery, currentCategory);
-      
+      console.log('📈 Search results:', results.length, 'businesses found');
+
       if (results.length === 0) {
+        console.log('❌ No results found');
         resultsList.innerHTML = '';
         if (resultsCount) resultsCount.classList.add('hidden');
         if (noResults) noResults.classList.remove('hidden');
         if (allBusinesses) allBusinesses.classList.add('hidden');
         return;
       }
-      
+
+      console.log('✅ Showing results');
       if (resultsCount) {
         resultsCount.textContent = `${results.length} ${results.length === 1 ? 'resultado' : 'resultados'}`;
         resultsCount.classList.remove('hidden');
       }
       if (noResults) noResults.classList.add('hidden');
       if (allBusinesses) allBusinesses.classList.add('hidden');
-      
+
       resultsList.innerHTML = results.map(r => renderBusinessCard(r.item, currentQuery)).join('');
     }
 
-    // Debounced search (300ms delay)
-    const debouncedSearch = debounce(performSearch, 300);
+    // Debounced search (300ms delay) - ONLY ONE listener
+    // Wrap to prevent the event from being passed to performSearch
+    const debouncedSearch = debounce(() => performSearch(false), 300);
 
-    // Initialize
-    document.addEventListener('DOMContentLoaded', function() {
+    /**
+     * Initialize event listeners (called when DOM is ready)
+     */
+    function initializeEventListeners() {
       const searchInput = document.getElementById('search-input');
       const filterButtons = document.querySelectorAll('.filter-btn');
-      
-      // Search input event
+
+      // Search input event - ONLY debounced input listener
       if (searchInput) {
-        searchInput.addEventListener('input', function() {
-          debouncedSearch();
-        });
-        
-        // Also update results immediately on keyup for responsiveness
-        searchInput.addEventListener('keyup', function() {
-          // Instant search for better UX
-          performSearch();
+        searchInput.addEventListener('input', debouncedSearch);
+        // Add enter key listener to trigger search immediately
+        searchInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            performSearch(false); // false = not initial search
+          }
         });
       }
-      
+
       // Category filter buttons
       filterButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
           // Update active state
           filterButtons.forEach(b => {
             b.classList.remove('active', 'bg-primary', 'dark:bg-accent-dark', 'text-white', 'border-primary', 'dark:border-accent');
             b.classList.add('border-stone-300', 'dark:border-stone-600', 'text-stone-600', 'dark:text-stone-400');
           });
-          
+
           this.classList.add('active', 'bg-primary', 'dark:bg-accent-dark', 'text-white', 'border-primary', 'dark:border-accent');
           this.classList.remove('border-stone-300', 'dark:border-stone-600', 'text-stone-600', 'dark:text-stone-400');
-          
+
           currentCategory = this.dataset.category;
           performSearch();
         });
       });
-      
+
       // Set initial active filter button
       const activeBtn = document.querySelector('.filter-btn[data-category="all"]');
       if (activeBtn) {
         activeBtn.classList.add('active', 'bg-primary', 'dark:bg-accent-dark', 'text-white', 'border-primary', 'dark:border-accent');
         activeBtn.classList.remove('border-stone-300', 'dark:border-stone-600', 'text-stone-600', 'dark:text-stone-400');
       }
-      
-      // Initial search if query exists
-      if (query) {
-        performSearch();
-      }
-    });
+    }
+
+    // If query exists on page load, perform search immediately (client-side)
+    // This ensures search works even if server-side rendering fails
+    console.log('🚀 Page loaded. query:', query, 'businesses:', businesses?.length || 0, 'URL:', window.location.href);
+    
+    if (query) {
+      currentQuery = query;
+      console.log('📍 Query detected:', query, '-> setting currentQuery');
+      // Show results section, hide all businesses section
+      document.getElementById('results-count').style.display = 'block';
+      document.getElementById('all-businesses').parentElement.style.display = 'none';
+      // Execute search
+      performSearch(true); // true = is initial search
+      initializeEventListeners();
+    } else {
+      // No query, show all businesses, hide results section
+      console.log('📍 No query detected, showing all businesses');
+      document.getElementById('results-count').style.display = 'none';
+      document.getElementById('all-businesses').parentElement.style.display = 'block';
+      initializeEventListeners();
+    }
   </script>
 </BaseLayout>

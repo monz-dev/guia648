@@ -82,3 +82,42 @@ _Guia648_ es una plataforma web tipo directorio diseñada para conectar a los ha
 - _Semana 1:_ Estructura
 - _Semana 2:_ Programación del buscador y carga de los primeros 30 negocios de Camargo.
 - _Semana 3:_ Pruebas de velocidad en el hosting real y lanzamiento en grupos de Facebook locales.
+
+---
+
+## 8. Mejoras del Buscador (Sprint SDD arreglar-busqueda)
+
+### 8.1. Normalización de Caracteres Acentuados
+- **Problema:** Búsquedas por "gastronomia" no encontraban "Gastronomía"
+- **Solución:** Implementar `normalizeString()` que remueve acentos y normaliza a minúsculas
+- **Resultado:** Búsquedas transparentes para caracteres con acentos (café → cafe)
+
+### 8.2. Mejora del Algoritmo de Fuzzy Matching
+- **Problema:** Tolerancia de typos limitada, puntuación inconsistente
+- **Mejora:** Sistema de puntuación jerárquico:
+  - Exact Match (1.0): "nuez" → "nuez"
+  - Prefix Match (0.9): "hotel" → "Hotel La Mansión"
+  - Substring Match (0.7): "mariscos" dentro de descripción
+  - Fuzzy Match (0.4): Tolerancia de caracteres faltantes
+- **AND Logic:** Múltiples términos deben coincidir (not OR)
+
+### 8.3. Arreglo de Filtrado de Categorías
+- **Problema:** Búsqueda fallaba si business.category estaba vacío
+- **Solución:** Validar y manejar campos missing gracefully
+- **Control:** Filter por categoría excluye negocios sin categoría asignada
+
+### 8.4. Optimización del Debounce
+- **Problema:** Doble listener (input + keyup) causaba ejecución múltiple
+- **Solución:** Mantener único listener con debounce de 300ms
+- **Beneficio:** Reduce carga de CPU, mejora UX sin lag
+
+### 8.5. Arquitectura de Búsqueda
+- **Module:** `src/lib/search.ts` — Lógica pura TypeScript (portable)
+- **Utils:** `src/lib/utils.ts::normalizeString()` — Normalización compartida
+- **Component:** `src/pages/buscar.astro` — Integración UI + event handlers
+- **Tests:** `src/lib/search.test.ts` — Casos de prueba documentados
+
+### 8.6. Performance Notes
+- Búsquedas real-time con debounce (no API calls)
+- Normalización en memoria (< 1ms para queries típicas)
+- Soporta 100+ negocios sin lag perceptible

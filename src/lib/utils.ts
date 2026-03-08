@@ -55,3 +55,18 @@ export function slugify(text: string): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '');
 }
+
+/**
+ * Normalize string for search operations
+ * Removes accents, converts to lowercase, and trims whitespace
+ * Example: "Búsqueda" → "busqueda"
+ */
+export function normalizeString(text: string): string {
+  if (!text) return '';
+  
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove accents
+    .trim();
+}
