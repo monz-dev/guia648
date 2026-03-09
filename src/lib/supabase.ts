@@ -13,6 +13,40 @@ export const supabase = supabaseUrl && supabaseAnonKey
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
+/**
+ * Upload a business logo to Supabase Storage
+ */
+export async function uploadBusinessLogo(
+  businessId: string,
+  file: File
+): Promise<string | null> {
+  if (!supabase) {
+    console.error('Supabase not initialized');
+    return null;
+  }
+
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${businessId}/logo.${fileExt}`;
+
+  const { data, error } = await supabase.storage
+    .from('businesses')
+    .upload(fileName, file, {
+      upsert: true,
+      contentType: file.type,
+    });
+
+  if (error) {
+    console.error('Error uploading logo:', error);
+    return null;
+  }
+
+  const { data: urlData } = supabase.storage
+    .from('businesses')
+    .getPublicUrl(fileName);
+
+  return urlData.publicUrl;
+}
+
 export type Database = {
   public: {
     Tables: {

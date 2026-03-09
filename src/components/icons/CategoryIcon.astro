@@ -1,0 +1,21 @@
+---
+import { Map, UtensilsCrossed, HeartPulse, Wrench } from '@lucide/astro';
+
+interface Props {
+  icon: string;
+  class?: string;
+}
+
+const { icon, class: className } = Astro.props;
+
+const icons: Record<string, any> = {
+  'map': Map,
+  'utensils': UtensilsCrossed,
+  'heart-pulse': HeartPulse,
+  'wrench': Wrench,
+};
+
+const IconComponent = icons[icon] || Map;
+---
+
+<IconComponent class={className} />

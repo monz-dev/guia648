@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
+import CategoryIcon from "../components/icons/CategoryIcon.astro";
 import { getCategories, getBusinesses } from "../lib/data";
 
 const categories = await getCategories();
@@ -221,9 +222,7 @@ const jsonLd = {
               class="p-6 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-primary dark:hover:border-accent hover:shadow-lg transition-all text-center"
             >
               <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 dark:bg-accent-dark/10 flex items-center justify-center">
-                <span class="text-2xl">
-                  {category.icon || "🔧"}
-                </span>
+                <CategoryIcon icon={category.icon || 'map'} class="w-6 h-6 text-primary dark:text-accent" />
               </div>
               <h3 class="font-semibold text-stone-900 dark:text-white">
                 {category.name}
