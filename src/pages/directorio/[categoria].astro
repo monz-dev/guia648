@@ -9,7 +9,7 @@ export async function getStaticPaths() {
   const businesses = await getBusinesses();
   
   return categories.map((category) => {
-    const categoryBusinesses = businesses.filter((b) => b.category === category.name);
+    const categoryBusinesses = businesses.filter((b) => b.category === category.slug);
     return {
       params: { categoria: category.slug },
       props: { 
