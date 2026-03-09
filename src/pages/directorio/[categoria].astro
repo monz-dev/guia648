@@ -2,22 +2,25 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ThemeToggle from '../../components/ThemeToggle.astro';
 import BusinessList from '../../components/BusinessList.astro';
-import categoriesData from '../../data/categories/categories.json';
-import businessesData from '../../data/businesses/businesses.json';
+import { getCategories, getBusinesses, getBusinessesByCategory, type Business, type Category } from '../../lib/data';
 
-export function getStaticPaths() {
-  const categories = categoriesData;
-  return categories.map((category) => ({
-    params: { categoria: category.slug },
-    props: { 
-      category,
-      allBusinesses: businessesData
-    },
-  }));
+export async function getStaticPaths() {
+  const categories = await getCategories();
+  const businesses = await getBusinesses();
+  
+  return categories.map((category) => {
+    const categoryBusinesses = businesses.filter((b) => b.category === category.name);
+    return {
+      params: { categoria: category.slug },
+      props: { 
+        category,
+        businesses: categoryBusinesses
+      },
+    };
+  });
 }
 
-const { category, allBusinesses } = Astro.props;
-const businesses = allBusinesses.filter((b) => b.category === category.slug);
+const { category, businesses } = Astro.props;
 
 const categoryDescriptions: Record<string, string> = {
   turismo: "Hoteles, atractivos turísticos y actividades en Camargo, Chihuahua.",

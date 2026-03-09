@@ -1,11 +1,10 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
-import categoriesData from "../data/categories/categories.json";
-import businessesData from "../data/businesses/businesses.json";
+import { getCategories, getBusinesses } from "../lib/data";
 
-const categories = categoriesData;
-const businesses = businessesData;
+const categories = await getCategories();
+const businesses = await getBusinesses();
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -223,13 +222,7 @@ const jsonLd = {
             >
               <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 dark:bg-accent-dark/10 flex items-center justify-center">
                 <span class="text-2xl">
-                  {category.icon === "map"
-                    ? "🗺️"
-                    : category.icon === "utensils"
-                      ? "🍽️"
-                      : category.icon === "heart-pulse"
-                        ? "❤️"
-                        : "🔧"}
+                  {category.icon || "🔧"}
                 </span>
               </div>
               <h3 class="font-semibold text-stone-900 dark:text-white">

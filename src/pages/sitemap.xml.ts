@@ -1,10 +1,9 @@
 ---
-import categoriesData from '../data/categories/categories.json';
-import businessesData from '../data/businesses/businesses.json';
+import { getBusinesses, getCategories } from '../lib/data';
 
 const siteUrl = 'https://guia648.com';
-const categories = categoriesData;
-const businesses = businessesData;
+const categories = await getCategories();
+const businesses = await getBusinesses();
 
 // Generate URLs
 const staticPages = [

@@ -3,18 +3,34 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ThemeToggle from '../../components/ThemeToggle.astro';
 import ReviewList from '../../components/ReviewList.astro';
 import ReviewForm from '../../components/ReviewForm.astro';
-import categoriesData from '../../data/categories/categories.json';
-import businessesData from '../../data/businesses/businesses.json';
+import { getBusinesses, getCategories, getReviewsByBusiness, type Business, type Category } from '../../lib/data';
 
-export function getStaticPaths() {
-  return businessesData.map((business) => ({
-    params: { slug: business.slug },
-    props: { business },
-  }));
+export async function getStaticPaths() {
+  const businesses = await getBusinesses();
+  const categories = await getCategories();
+  
+  // Get reviews for all businesses
+  const businessesWithReviews = await Promise.all(
+    businesses.map(async (business) => ({
+      ...business,
+      reviews: await getReviewsByBusiness(business.id)
+    }))
+  );
+  
+  return businessesWithReviews.map((business) => {
+    const category = categories.find((c) => c.name === business.category);
+    return {
+      params: { slug: business.slug },
+      props: { 
+        business,
+        category,
+        reviews: business.reviews || []
+      },
+    };
+  });
 }
 
-const { business } = Astro.props;
-const category = categoriesData.find((c) => c.slug === business.category);
+const { business, category, reviews } = Astro.props;
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -202,7 +218,7 @@ const pageDescription = `${business.name} - ${category?.name || 'Negocio'} en Ca
       </div>
 
       <!-- Reviews Section -->
-      <ReviewList reviews={[]} businessSlug={business.slug} />
+      <ReviewList reviews={reviews} businessSlug={business.slug} />
       <ReviewForm businessSlug={business.slug} />
     </div>
   </main>

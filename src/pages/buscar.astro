@@ -2,11 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import BusinessCard from '../components/BusinessCard.astro';
-import categoriesData from '../data/categories/categories.json';
-import businessesData from '../data/businesses/businesses.json';
+import { getCategories, getBusinesses } from '../lib/data';
 
-const categories = categoriesData;
-const businesses = businessesData;
+const categories = await getCategories();
+const businesses = await getBusinesses();
 
 const query = Astro.url.searchParams.get('q') || '';
 const categoryFilter = Astro.url.searchParams.get('categoria') || 'all';

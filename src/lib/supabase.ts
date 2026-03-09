@@ -21,16 +21,17 @@ export type Database = {
           id: string;
           name: string;
           slug: string;
-          category: string;
+          category_id: string | null;
+          category: string | null;
           description: string | null;
           phone: string | null;
           whatsapp: string | null;
           address: string | null;
           google_maps_url: string | null;
           logo_url: string | null;
-          featured: boolean;
-          created_at: string;
-          updated_at: string;
+          featured: boolean | null;
+          created_at: string | null;
+          updated_at: string | null;
         };
         Insert: Omit<Database['public']['Tables']['businesses']['Row'], 'id' | 'created_at' | 'updated_at'>;
         Update: Partial<Database['public']['Tables']['businesses']['Insert']>;
@@ -41,10 +42,24 @@ export type Database = {
           name: string;
           slug: string;
           icon: string | null;
-          order: number;
+          order: number | null;
+          created_at: string | null;
         };
-        Insert: Omit<Database['public']['Tables']['categories']['Row'], 'id'>;
+        Insert: Omit<Database['public']['Tables']['categories']['Row'], 'id' | 'created_at'>;
         Update: Partial<Database['public']['Tables']['categories']['Insert']>;
+      };
+      reviews: {
+        Row: {
+          id: string;
+          business_id: string | null;
+          author_name: string;
+          rating: number;
+          comment: string | null;
+          approved: boolean | null;
+          created_at: string | null;
+        };
+        Insert: Omit<Database['public']['Tables']['reviews']['Row'], 'id' | 'created_at'>;
+        Update: Partial<Database['public']['Tables']['reviews']['Insert']>;
       };
     };
   };
