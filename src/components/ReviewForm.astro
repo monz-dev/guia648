@@ -1,12 +1,21 @@
 ---
 interface Props {
   businessSlug: string;
+  businessId: string;
 }
 
-const { businessSlug } = Astro.props;
+const { businessSlug, businessId } = Astro.props;
+
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 ---
 
-<div class="mt-8 p-6 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700">
+<div 
+  class="mt-8 p-6 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700"
+  data-business-id={businessId}
+  data-supabase-url={supabaseUrl}
+  data-supabase-key={supabaseAnonKey}
+>
   <h3 class="text-lg font-semibold text-stone-900 dark:text-white mb-4">
     Deja tu reseña
   </h3>
@@ -77,15 +86,22 @@ const { businessSlug } = Astro.props;
 </div>
 
 <script is:inline>
-  // Star rating interaction
   (function() {
-    const starButtons = document.querySelectorAll('.star-btn');
-    const ratingInput = document.getElementById('rating-value');
-    let currentRating = 0;
+    var container = document.querySelector('[data-business-id]');
+    if (!container) return;
+
+    var businessId = container.dataset.businessId;
+    var supabaseUrl = container.dataset.supabaseUrl;
+    var supabaseAnonKey = container.dataset.supabaseKey;
+
+    // Star rating
+    var starButtons = document.querySelectorAll('.star-btn');
+    var ratingInput = document.getElementById('rating-value');
+    var currentRating = 0;
 
     function updateStars(rating) {
-      starButtons.forEach((btn, index) => {
-        const star = index + 1;
+      starButtons.forEach(function(btn, index) {
+        var star = index + 1;
         if (star <= rating) {
           btn.classList.remove('text-stone-300', 'dark:text-stone-600');
           btn.classList.add('text-yellow-400');
@@ -96,16 +112,15 @@ const { businessSlug } = Astro.props;
       });
     }
 
-    starButtons.forEach(btn => {
+    starButtons.forEach(function(btn) {
       btn.addEventListener('click', function() {
         currentRating = parseInt(this.dataset.rating);
-        ratingInput.value = currentRating;
+        if (ratingInput) ratingInput.value = currentRating;
         updateStars(currentRating);
       });
 
       btn.addEventListener('mouseenter', function() {
-        const hoverRating = parseInt(this.dataset.rating);
-        updateStars(hoverRating);
+        updateStars(parseInt(this.dataset.rating));
       });
 
       btn.addEventListener('mouseleave', function() {
@@ -114,50 +129,72 @@ const { businessSlug } = Astro.props;
     });
 
     // Form submission
-    const form = document.getElementById('review-form');
-    const messageEl = document.getElementById('review-message');
+    var form = document.getElementById('review-form');
+    var messageEl = document.getElementById('review-message');
 
-    form?.addEventListener('submit', async function(e) {
+    form?.addEventListener('submit', function(e) {
       e.preventDefault();
 
-      const formData = new FormData(form);
-      const rating = parseInt(formData.get('rating'));
+      var formData = new FormData(form);
+      var rating = parseInt(formData.get('rating'));
 
       if (rating === 0) {
-        messageEl.textContent = 'Por favor selecciona un rating';
-        messageEl.classList.remove('hidden', 'text-green-600');
-        messageEl.classList.add('text-red-600');
+        if (messageEl) {
+          messageEl.textContent = 'Por favor selecciona un rating';
+          messageEl.classList.remove('hidden', 'text-green-600');
+          messageEl.classList.add('text-red-600');
+        }
         return;
       }
 
-      const reviewData = {
-        business_slug: formData.get('business_slug'),
+      if (!businessId || !supabaseUrl || !supabaseAnonKey) {
+        if (messageEl) {
+          messageEl.textContent = 'Error: Configuración incompleta';
+          messageEl.classList.remove('hidden', 'text-green-600');
+          messageEl.classList.add('text-red-600');
+        }
+        return;
+      }
+
+      var reviewData = {
+        business_id: businessId,
         author_name: formData.get('author_name'),
         rating: rating,
         comment: formData.get('comment'),
-        created_at: new Date().toISOString()
+        approved: false
       };
 
-      try {
-        // Get existing reviews from localStorage or initialize
-        const storedReviews = localStorage.getItem('reviews_' + reviewData.business_slug);
-        const reviews = storedReviews ? JSON.parse(storedReviews) : [];
-        
-        // Add new review
-        reviewData.id = Date.now().toString();
-        reviews.unshift(reviewData);
-        
-        // Save to localStorage
-        localStorage.setItem('reviews_' + reviewData.business_slug, JSON.stringify(reviews));
-        
-        // Reload to show new review
-        window.location.reload();
-      } catch (error) {
-        console.error('Error saving review:', error);
-        messageEl.textContent = 'Error al guardar la reseña. Intenta de nuevo.';
-        messageEl.classList.remove('hidden', 'text-green-600');
-        messageEl.classList.add('text-red-600');
-      }
+      fetch(supabaseUrl + '/rest/v1/reviews', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': supabaseAnonKey,
+          'Authorization': 'Bearer ' + supabaseAnonKey,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(reviewData)
+      })
+      .then(function(res) {
+        if (!res.ok) {
+          throw new Error('Failed to submit review');
+        }
+        if (messageEl) {
+          messageEl.textContent = '¡Reseña enviada! Será visible después de ser aprobada.';
+          messageEl.classList.remove('hidden', 'text-red-600');
+          messageEl.classList.add('text-green-600');
+        }
+        form?.reset();
+        currentRating = 0;
+        updateStars(0);
+      })
+      .catch(function(err) {
+        console.error('Error saving review:', err);
+        if (messageEl) {
+          messageEl.textContent = 'Error al guardar la reseña. Intenta de nuevo.';
+          messageEl.classList.remove('hidden', 'text-green-600');
+          messageEl.classList.add('text-red-600');
+        }
+      });
     });
   })();
 </script>

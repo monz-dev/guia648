@@ -218,8 +218,8 @@ const pageDescription = `${business.name} - ${category?.name || 'Negocio'} en Ca
       </div>
 
       <!-- Reviews Section -->
-      <ReviewList reviews={reviews} businessSlug={business.slug} />
-      <ReviewForm businessSlug={business.slug} />
+      <ReviewList businessSlug={business.slug} />
+      <ReviewForm businessSlug={business.slug} businessId={business.id} />
     </div>
   </main>
 

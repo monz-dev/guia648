@@ -124,6 +124,73 @@ export async function getReviewsByBusiness(businessId: string): Promise<Review[]
 }
 
 /**
+ * Insert a new review (client-side)
+ */
+export async function insertReview(
+  businessId: string,
+  authorName: string,
+  rating: number,
+  comment: string
+): Promise<{ success: boolean; error?: string }> {
+  if (!supabase) {
+    return { success: false, error: 'Supabase client not initialized' };
+  }
+
+  const { error } = await supabase
+    .from('reviews')
+    .insert({
+      business_id: businessId,
+      author_name: authorName,
+      rating,
+      comment,
+      approved: false, // Require moderation
+    });
+
+  if (error) {
+    console.error('Error inserting review:', error);
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}
+
+/**
+ * Get reviews by business slug (client-side)
+ */
+export async function getReviewsByBusinessSlug(businessSlug: string): Promise<Review[]> {
+  if (!supabase) {
+    console.warn('Supabase client not initialized');
+    return [];
+  }
+
+  // First get the business ID from slug
+  const { data: business, error: businessError } = await supabase
+    .from('businesses')
+    .select('id')
+    .eq('slug', businessSlug)
+    .single();
+
+  if (businessError || !business) {
+    console.error('Error fetching business:', businessError);
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from('reviews')
+    .select('*')
+    .eq('business_id', business.id)
+    .eq('approved', true) // Only show approved reviews
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching reviews:', error);
+    return [];
+  }
+
+  return data || [];
+}
+
+/**
  * Get businesses by category slug
  */
 export async function getBusinessesByCategory(categorySlug: string): Promise<Business[]> {
