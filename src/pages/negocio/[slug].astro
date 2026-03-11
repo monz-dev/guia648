@@ -1,30 +1,19 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ThemeToggle from '../../components/ThemeToggle.astro';
-import ReviewList from '../../components/ReviewList.astro';
-import ReviewForm from '../../components/ReviewForm.astro';
-import { getBusinesses, getCategories, getReviewsByBusiness, type Business, type Category } from '../../lib/data';
+import { getBusinesses, getCategories, type Business, type Category } from '../../lib/data';
 
 export async function getStaticPaths() {
   const businesses = await getBusinesses();
   const categories = await getCategories();
   
-  // Get reviews for all businesses
-  const businessesWithReviews = await Promise.all(
-    businesses.map(async (business) => ({
-      ...business,
-      reviews: await getReviewsByBusiness(business.id)
-    }))
-  );
-  
-  return businessesWithReviews.map((business) => {
+  return businesses.map((business) => {
     const category = categories.find((c) => c.name === business.category);
     return {
       params: { slug: business.slug },
       props: { 
         business,
         category,
-        reviews: business.reviews || []
       },
     };
   });
@@ -216,10 +205,6 @@ const pageDescription = `${business.name} - ${category?.name || 'Negocio'} en Ca
           )}
         </div>
       </div>
-
-      <!-- Reviews Section -->
-      <ReviewList businessSlug={business.slug} />
-      <ReviewForm businessSlug={business.slug} businessId={business.id} />
     </div>
   </main>
 
