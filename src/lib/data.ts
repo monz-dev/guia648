@@ -1,35 +1,43 @@
 import { supabase, type Database } from './supabase';
+import businessesData from '../data/businesses/businesses.json';
+import categoriesData from '../data/categories/categories.json';
 
 export type Business = Database['public']['Tables']['businesses']['Row'];
 export type Category = Database['public']['Tables']['categories']['Row'];
 export type Review = Database['public']['Tables']['reviews']['Row'];
 
+// Use local JSON data as fallback
+const localBusinesses = businessesData as Business[];
+const localCategories = categoriesData as Category[];
+
 /**
  * Get all businesses, optionally featured only
  */
 export async function getBusinesses(featuredOnly = false): Promise<Business[]> {
-  if (!supabase) {
-    console.warn('Supabase client not initialized');
-    return [];
+  // Try Supabase first
+  if (supabase) {
+    let query = supabase
+      .from('businesses')
+      .select('*')
+      .order('name', { ascending: true });
+
+    if (featuredOnly) {
+      query = query.eq('featured', true);
+    }
+
+    const { data, error } = await query;
+
+    if (!error && data) {
+      return data;
+    }
   }
 
-  let query = supabase
-    .from('businesses')
-    .select('*')
-    .order('name', { ascending: true });
-
+  // Fallback to local JSON
+  console.warn('Using local JSON data for businesses');
   if (featuredOnly) {
-    query = query.eq('featured', true);
+    return localBusinesses.filter(b => b.featured);
   }
-
-  const { data, error } = await query;
-
-  if (error) {
-    console.error('Error fetching businesses:', error);
-    return [];
-  }
-
-  return data || [];
+  return localBusinesses.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 /**
@@ -59,22 +67,21 @@ export async function getBusinessBySlug(slug: string): Promise<Business | null> 
  * Get all categories ordered by order field
  */
 export async function getCategories(): Promise<Category[]> {
-  if (!supabase) {
-    console.warn('Supabase client not initialized');
-    return [];
+  // Try Supabase first
+  if (supabase) {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .order('order', { ascending: true });
+
+    if (!error && data) {
+      return data;
+    }
   }
 
-  const { data, error } = await supabase
-    .from('categories')
-    .select('*')
-    .order('order', { ascending: true });
-
-  if (error) {
-    console.error('Error fetching categories:', error);
-    return [];
-  }
-
-  return data || [];
+  // Fallback to local JSON
+  console.warn('Using local JSON data for categories');
+  return [...localCategories].sort((a, b) => (a.order || 0) - (b.order || 0));
 }
 
 /**
