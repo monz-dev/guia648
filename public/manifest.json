@@ -1,0 +1,28 @@
+{
+  "name": "Guia648 - Directorio de Camargo",
+  "short_name": "Guia648",
+  "description": "Directorio digital de Camargo, Chihuahua. Encuentra turismo, gastronomía, salud y servicios locales.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f5dc",
+  "theme_color": "#8b7355",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "travel", "local"],
+  "lang": "es-MX",
+  "scope": "/",
+  "prefer_related_applications": false
+}

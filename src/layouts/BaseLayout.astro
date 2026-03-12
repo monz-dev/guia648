@@ -17,6 +17,9 @@ const {
 
 const siteUrl = 'https://guia648.com';
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
+
+// Google Analytics Measurement ID - REEMPLAZA ESTO CON TU ID
+const GA_ID = 'G-XXXXXXXXXX';
 ---
 
 <!doctype html>
@@ -40,6 +43,12 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Guia648" />
+    
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
@@ -60,6 +69,15 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
     <meta name="theme-color" content="#8b7355" />
     <meta name="msapplication-TileColor" content="#8b7355" />
     
+    <!-- Google Analytics -->
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    
     <!-- Prevent FOUC -->
     <script is:inline>
       const theme = localStorage.getItem('theme');
@@ -70,5 +88,20 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
   </head>
   <body class="min-h-screen bg-sand dark:bg-sand-dark text-stone-900 dark:text-sand transition-colors">
     <slot />
+    
+    <!-- Service Worker Registration -->
+    <script is:inline>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered:', registration.scope);
+            })
+            .catch((error) => {
+              console.log('SW registration failed:', error);
+            });
+        });
+      }
+    </script>
   </body>
 </html>
