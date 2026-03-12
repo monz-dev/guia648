@@ -18,8 +18,8 @@ const {
 const siteUrl = 'https://guia648.com';
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 
-// Google Analytics Measurement ID - REEMPLAZA ESTO CON TU ID
-const GA_ID = 'G-XXXXXXXXXX';
+// Google Analytics Measurement ID
+const GA_ID = 'G-LJPLF7MMFF';
 ---
 
 <!doctype html>
@@ -75,7 +75,7 @@ const GA_ID = 'G-XXXXXXXXXX';
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX');
+      gtag('config', GA_ID);
     </script>
     
     <!-- Prevent FOUC -->
