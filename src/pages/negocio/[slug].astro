@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ThemeToggle from '../../components/ThemeToggle.astro';
+import ReviewList from '../../components/ReviewList.astro';
+import ReviewForm from '../../components/ReviewForm.astro';
 import { getBusinesses, getCategories, type Business, type Category } from '../../lib/data';
 
 export async function getStaticPaths() {
@@ -204,6 +206,10 @@ const pageDescription = `${business.name} - ${category?.name || 'Negocio'} en Ca
             </a>
           )}
         </div>
+
+        <!-- Reviews Section -->
+        <ReviewList businessSlug={business.slug} />
+        <ReviewForm businessSlug={business.slug} businessId={business.id} />
 
         <!-- Claim Business Button -->
         <div class="mt-8 pt-6 border-t border-stone-200 dark:border-stone-700">
