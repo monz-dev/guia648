@@ -10,24 +10,25 @@ const businesses = await getBusinesses();
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "Guia648 - Directorio de Camargo",
-  "description": "Directorio digital de comercios y servicios de Camargo, Chihuahua. Encuentra turismo, gastronomía, salud y más.",
-  "url": "https://guia648.com",
-  "potentialAction": {
+  name: "Guia648 - Directorio de Camargo",
+  description:
+    "Directorio digital de comercios y servicios de Camargo, Chihuahua. Encuentra turismo, gastronomía, salud y más.",
+  url: "https://guia648.com",
+  potentialAction: {
     "@type": "SearchAction",
-    "target": "https://guia648.com/buscar?q={search_term_string}",
-    "query-input": "required name=search_term_string"
+    target: "https://guia648.com/buscar?q={search_term_string}",
+    "query-input": "required name=search_term_string",
   },
-  "areaServed": {
+  areaServed: {
     "@type": "City",
-    "name": "Camargo",
-    "addressRegion": "Chihuahua",
-    "addressCountry": "MX"
-  }
+    name: "Camargo",
+    addressRegion: "Chihuahua",
+    addressCountry: "MX",
+  },
 };
 ---
 
-<BaseLayout 
+<BaseLayout
   title="Inicio"
   description="Directorio digital de Camargo, Chihuahua. Encuentra turismo, gastronomía, salud y servicios locales."
 >
@@ -36,8 +37,8 @@ const jsonLd = {
     class="fixed top-0 w-full bg-white dark:bg-sand-dark border-b border-stone-200 dark:border-stone-800 z-50"
   >
     <nav class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      <a href="/" class="text-xl font-bold text-primary dark:text-accent">
-        Guia648
+      <a href="/" class="flex items-center">
+        <img src="/images//logo.png" alt="Guia648" class="h-12 w-auto" />
       </a>
 
       <!-- Desktop Menu -->
@@ -222,7 +223,10 @@ const jsonLd = {
               class="p-6 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-primary dark:hover:border-accent hover:shadow-lg transition-all text-center"
             >
               <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 dark:bg-accent-dark/10 flex items-center justify-center">
-                <CategoryIcon icon={category.icon || 'map'} class="w-6 h-6 text-primary dark:text-accent" />
+                <CategoryIcon
+                  icon={category.icon || "map"}
+                  class="w-6 h-6 text-primary dark:text-accent"
+                />
               </div>
               <h3 class="font-semibold text-stone-900 dark:text-white">
                 {category.name}
