@@ -73,6 +73,51 @@ npm run preview
 
 The static output will be in `dist/` - ready to upload to Hostgator.
 
+## 🔄 Workflow
+
+### Desarrollo Local
+
+```bash
+# Iniciar servidor de desarrollo (Astro en puerto 4321)
+npm run dev
+
+# En otra terminal, iniciar API PHP (para datos de negocios)
+cd scripts && php -S localhost:8000 -t ..
+```
+
+### Sincronizar Datos desde Supabase
+
+Cuando cargues negocios nuevos en Supabase y quieras actualizar los JSONs locales:
+
+```bash
+# Obtener credenciales de Supabase Dashboard → Settings → API
+export SUPABASE_URL=https://your-project.supabase.co
+export SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+
+# Ejecutar script de sync
+node scripts/sync-from-supabase.mjs
+
+# Verificar cambios en los JSONs
+git status
+```
+
+### Commit & Deploy
+
+```bash
+# 1. Agregar cambios
+git add .
+
+# 2. Commit con mensaje descriptivo
+git commit -m "feat: agregar nuevos negocios"
+
+# 3. Push a remote
+git push
+
+# 4. Build local y subir a HostGator
+npm run build
+# Subir contenido de dist/ + carpeta api/ a HostGator
+```
+
 ## 📁 Project Structure
 
 ```
