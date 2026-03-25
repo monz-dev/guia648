@@ -21,7 +21,7 @@ export async function getStaticPaths() {
   });
 }
 
-const { business, category, reviews } = Astro.props;
+const { business, category } = Astro.props;
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -52,6 +52,8 @@ const jsonLd = {
 };
 
 const pageDescription = `${business.name} - ${category?.name || 'Negocio'} en Camargo, Chihuahua. ${business.description || 'Visítanos en Guia648.com'}`;
+const businessSlug = business.slug;
+const businessId = business.id;
 ---
 
 <BaseLayout title={business.name} description={pageDescription} image={business.logo_url || undefined}>
@@ -63,7 +65,6 @@ const pageDescription = `${business.name} - ${category?.name || 'Negocio'} en Ca
         Guia648
       </a>
       
-      <!-- Desktop Menu -->
       <div class="hidden md:flex items-center gap-4">
         <a href="/" class="text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
           Inicio
@@ -83,7 +84,6 @@ const pageDescription = `${business.name} - ${category?.name || 'Negocio'} en Ca
         <ThemeToggle />
       </div>
 
-      <!-- Mobile Menu Button -->
       <button id="mobile-menu-btn" class="md:hidden p-2 text-stone-600 dark:text-stone-300" aria-label="Abrir menú">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -91,7 +91,6 @@ const pageDescription = `${business.name} - ${category?.name || 'Negocio'} en Ca
       </button>
     </nav>
 
-    <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-sand-dark border-t border-stone-200 dark:border-stone-800">
       <div class="px-4 py-3 space-y-2">
         <a href="/" class="block py-2 text-sm font-medium hover:text-primary dark:hover:text-accent transition-colors">
@@ -131,90 +130,37 @@ const pageDescription = `${business.name} - ${category?.name || 'Negocio'} en Ca
     });
   </script>
 
-  <main class="pt-24 pb-16 px-4 max-w-4xl mx-auto">
+  <main class="pt-24 pb-16 px-4 max-w-4xl mx-auto" id="business-container">
     <div class="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 overflow-hidden">
-      {business.logo_url && (
-        <div class="aspect-video w-full bg-stone-200 dark:bg-stone-700">
-          <img 
-            src={business.logo_url} 
-            alt={business.name}
-            class="w-full h-full object-cover"
-          />
-        </div>
-      )}
-
+      <div id="business-logo"></div>
       <div class="p-6 md:p-8">
         <div class="flex items-start justify-between mb-6">
           <div>
-            <h1 class="text-2xl md:text-3xl font-bold text-stone-900 dark:text-white mb-2">
-              {business.name}
+            <h1 id="business-name" class="text-2xl md:text-3xl font-bold text-stone-900 dark:text-white mb-2">
+              <span class="animate-pulse bg-stone-200 dark:bg-stone-700 h-8 w-64 rounded"></span>
             </h1>
-            {category && (
-              <a 
-                href={`/directorio/${category.slug}`}
-                class="text-sm text-primary dark:text-accent hover:underline"
-              >
-                {category.name}
-              </a>
-            )}
+            <a id="business-category-link" href="#" class="text-sm text-primary dark:text-accent hover:underline">
+              <span class="animate-pulse bg-stone-200 dark:bg-stone-700 h-4 w-24 rounded inline-block"></span>
+            </a>
           </div>
         </div>
 
-        <p class="text-stone-600 dark:text-stone-300 mb-8 text-lg">
-          {business.description}
+        <p id="business-description" class="text-stone-600 dark:text-stone-300 mb-8 text-lg">
+          <span class="animate-pulse bg-stone-200 dark:bg-stone-700 h-6 w-full rounded block mb-2"></span>
+          <span class="animate-pulse bg-stone-200 dark:bg-stone-700 h-6 w-3/4 rounded block"></span>
         </p>
 
-        <div class="grid gap-4">
-          {business.phone && (
-            <a
-              href={`tel:${business.phone}`}
-              class="flex items-center gap-3 p-4 rounded-xl bg-stone-100 dark:bg-stone-700 hover:bg-primary/10 dark:hover:bg-accent-dark/10 transition-colors"
-            >
-              <span class="text-xl">📞</span>
-              <span class="font-medium text-stone-900 dark:text-white">{business.phone}</span>
-            </a>
-          )}
+        <div id="business-contact" class="grid gap-4"></div>
 
-          {business.whatsapp && (
-            <a
-              href={`https://wa.me/52${business.whatsapp}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="flex items-center gap-3 p-4 rounded-xl bg-green-500/10 hover:bg-green-500/20 transition-colors"
-            >
-              <span class="text-xl">💬</span>
-              <span class="font-medium text-green-700 dark:text-green-400">WhatsApp</span>
-            </a>
-          )}
-
-          {business.address && (
-            <div class="flex items-center gap-3 p-4 rounded-xl bg-stone-100 dark:bg-stone-700">
-              <span class="text-xl">📍</span>
-              <span class="text-stone-900 dark:text-white">{business.address}</span>
-            </div>
-          )}
-
-          {business.google_maps_url && (
-            <a
-              href={business.google_maps_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="flex items-center gap-3 p-4 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 transition-colors"
-            >
-              <span class="text-xl">🗺️</span>
-              <span class="font-medium text-blue-700 dark:text-blue-400">Ver en Google Maps</span>
-            </a>
-          )}
+        <div id="business-reviews">
+          <ReviewList businessSlug={businessSlug} />
+          <ReviewForm businessSlug={businessSlug} businessId={businessId} />
         </div>
 
-        <!-- Reviews Section -->
-        <ReviewList businessSlug={business.slug} />
-        <ReviewForm businessSlug={business.slug} businessId={business.id} />
-
-        <!-- Claim Business Button -->
         <div class="mt-8 pt-6 border-t border-stone-200 dark:border-stone-700">
           <a
-            href={`https://admin-guia648-d46v.vercel.app/auth/claim/${business.slug}`}
+            id="claim-button"
+            href="#"
             target="_blank"
             rel="noopener noreferrer"
             class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl border-2 border-stone-300 dark:border-stone-600 text-stone-600 dark:text-stone-300 hover:border-primary dark:hover:border-accent hover:text-primary dark:hover:text-accent transition-colors font-medium"
@@ -239,4 +185,98 @@ const pageDescription = `${business.name} - ${category?.name || 'Negocio'} en Ca
       <p class="text-sm">Conectando residentes y turistas con los mejores comercios locales</p>
     </div>
   </footer>
+
+  <script define:vars={{ businessSlug, businessId }}>
+    async function loadBusinessData() {
+      try {
+        const apiUrl = window.location.hostname === 'localhost' 
+          ? `http://localhost:8000/api/business.php?slug=${businessSlug}`
+          : `/api/business.php?slug=${businessSlug}`;
+        
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error('Failed to load');
+        
+        const data = await response.json();
+        const { business, category } = data;
+
+        document.title = business.name;
+        
+        const nameEl = document.getElementById('business-name');
+        if (nameEl) {
+          nameEl.textContent = business.name;
+        }
+
+        const categoryLink = document.getElementById('business-category-link');
+        if (categoryLink && category) {
+          categoryLink.href = `/directorio/${category.slug}`;
+          categoryLink.textContent = category.name;
+        }
+
+        const description = document.getElementById('business-description');
+        if (description) {
+          description.textContent = business.description || '';
+        }
+
+        const contactContainer = document.getElementById('business-contact');
+        if (contactContainer) {
+          let html = '';
+          
+          if (business.phone) {
+            html += `
+              <a href="tel:${business.phone}" class="flex items-center gap-3 p-4 rounded-xl bg-stone-100 dark:bg-stone-700 hover:bg-primary/10 dark:hover:bg-accent-dark/10 transition-colors">
+                <span class="text-xl">📞</span>
+                <span class="font-medium text-stone-900 dark:text-white">${business.phone}</span>
+              </a>`;
+          }
+          
+          if (business.whatsapp) {
+            html += `
+              <a href="https://wa.me/52${business.whatsapp}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 p-4 rounded-xl bg-green-500/10 hover:bg-green-500/20 transition-colors">
+                <span class="text-xl">💬</span>
+                <span class="font-medium text-green-700 dark:text-green-400">WhatsApp</span>
+              </a>`;
+          }
+          
+          if (business.address) {
+            html += `
+              <div class="flex items-center gap-3 p-4 rounded-xl bg-stone-100 dark:bg-stone-700">
+                <span class="text-xl">📍</span>
+                <span class="text-stone-900 dark:text-white">${business.address}</span>
+              </div>`;
+          }
+          
+          if (business.google_maps_url) {
+            html += `
+              <a href="${business.google_maps_url}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 p-4 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 transition-colors">
+                <span class="text-xl">🗺️</span>
+                <span class="font-medium text-blue-700 dark:text-blue-400">Ver en Google Maps</span>
+              </a>`;
+          }
+          
+          contactContainer.innerHTML = html;
+        }
+
+        const logoContainer = document.getElementById('business-logo');
+        if (logoContainer && business.logo_url) {
+          logoContainer.innerHTML = `
+            <div class="aspect-video w-full bg-stone-200 dark:bg-stone-700">
+              <img src="${business.logo_url}" alt="${business.name}" class="w-full h-full object-cover" />
+            </div>`;
+        }
+
+        const claimButton = document.getElementById('claim-button');
+        if (claimButton) {
+          claimButton.href = `https://admin-guia648-d46v.vercel.app/auth/claim/${business.slug}`;
+        }
+
+        document.getElementById('business-reviews')?.setAttribute('data-slug', business.slug);
+        document.getElementById('business-reviews')?.setAttribute('data-id', business.id);
+
+      } catch (error) {
+        console.error('Error loading business data:', error);
+      }
+    }
+
+    loadBusinessData();
+  </script>
 </BaseLayout>
