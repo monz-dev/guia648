@@ -78,7 +78,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
     var avgEl = document.getElementById('rating-average');
     var countEl = document.getElementById('review-count');
 
-    fetch(url + '/rest/v1/businesses?select=id&slug=eq.' + slug, {
+    fetch(url + '/rest/v1/businesses?select=id&slug=eq.' + encodeURIComponent(slug), {
       headers: {
         'apikey': key,
         'Authorization': 'Bearer ' + key

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CategoryIcon from "../components/icons/CategoryIcon.astro";
+import Footer from "../components/Footer.astro";
 import { getCategories, getBusinesses } from "../lib/data";
 
 const categories = await getCategories();
@@ -161,14 +162,5 @@ const jsonLd = {
     </section>
   </main>
 
-  <footer class="py-8 px-4 bg-stone-900 text-stone-400">
-    <div class="max-w-7xl mx-auto text-center">
-      <p class="mb-2">
-        © 2024 Guia648 - Directorio Digital de Camargo, Chihuahua
-      </p>
-      <p class="text-sm">
-        Conectando residentes y turistas con los mejores comercios locales
-      </p>
-    </div>
-  </footer>
+  <Footer />
 </BaseLayout>

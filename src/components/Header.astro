@@ -50,6 +50,8 @@ import ThemeToggle from "./ThemeToggle.astro";
       id="mobile-menu-btn"
       class="md:hidden p-2 text-stone-600 dark:text-stone-300"
       aria-label="Abrir menú"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -71,6 +73,7 @@ import ThemeToggle from "./ThemeToggle.astro";
   <div
     id="mobile-menu"
     class="hidden md:hidden bg-white dark:bg-sand-dark border-t border-stone-200 dark:border-stone-800"
+    aria-hidden="true"
   >
     <div class="px-4 py-3 space-y-2">
       <a
@@ -115,12 +118,17 @@ import ThemeToggle from "./ThemeToggle.astro";
   const mobileMenu = document.getElementById("mobile-menu");
 
   menuBtn?.addEventListener("click", () => {
+    const isExpanded = menuBtn.getAttribute("aria-expanded") === "true";
+    menuBtn.setAttribute("aria-expanded", String(!isExpanded));
     mobileMenu?.classList.toggle("hidden");
+    mobileMenu?.setAttribute("aria-hidden", String(isExpanded));
   });
 
   mobileMenu?.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", () => {
       mobileMenu.classList.add("hidden");
+      mobileMenu.setAttribute("aria-hidden", "true");
+      if (menuBtn) menuBtn.setAttribute("aria-expanded", "false");
     });
   });
 </script>

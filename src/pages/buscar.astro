@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BusinessCard from '../components/BusinessCard.astro';
+import Footer from '../components/Footer.astro';
 import { getCategories, getBusinesses } from '../lib/data';
 
 const categories = await getCategories();
@@ -95,198 +96,33 @@ const pageDescription = query
     )}
   </main>
 
-  <footer class="py-8 px-4 bg-stone-900 text-stone-400">
-    <div class="max-w-7xl mx-auto text-center">
-      <p class="mb-2">© 2024 Guia648 - Directorio Digital de Camargo, Chihuahua</p>
-      <p class="text-sm">Conectando residentes y turistas con los mejores comercios locales</p>
-    </div>
-  </footer>
+  <Footer />
+
+  <script define:vars={{ businesses }}>
+    window.__SEARCH_BUSINESSES__ = businesses;
+  </script>
 
   <!-- Search Script - Real-time search with filters -->
-  <script is:inline define:vars={{ businesses }}>
+  <script type="module">
+    import { normalizeString, scoreMatch, searchBusinesses as doSearch, escapeHtml, highlightMatches, debounce } from '../lib/search-client.js';
+    
+    const businesses = window.__SEARCH_BUSINESSES__;
+    delete window.__SEARCH_BUSINESSES__;
+
     // Get query from URL parameter (more reliable than define:vars)
     const urlParams = new URLSearchParams(window.location.search);
     const query = urlParams.get('q') || '';
-    
-    /**
-     * Normalize string for search operations
-     * Removes accents, converts to lowercase, and trims whitespace
-     */
-    function normalizeString(text) {
-      if (!text) return '';
-      return text
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '') // Remove accents
-        .trim();
-    }
 
     /**
-     * Score a single match between text and pattern
-     * Returns a score from 0 to 1 based on match type
+     * Validate that a URL is safe (http/https only)
      */
-    function scoreMatch(text, pattern) {
-      if (!pattern || !text) return 0;
-
-      const normalizedText = normalizeString(text);
-      const normalizedPattern = normalizeString(pattern);
-
-      // Exact match
-      if (normalizedText === normalizedPattern) return 1.0;
-
-      // Prefix match
-      const words = normalizedText.split(/\s+/);
-      if (words.some(word => word.startsWith(normalizedPattern))) return 0.9;
-
-      // Substring match only for patterns >= 3 characters
-      if (pattern.length >= 3 && normalizedText.includes(normalizedPattern)) return 0.7;
-
-      // Fuzzy match only for patterns >= 3 characters
-      if (pattern.length >= 3) {
-        return calculateFuzzyScore(normalizedText, normalizedPattern);
+    function isSafeUrl(url) {
+      try {
+        const parsed = new URL(url);
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+      } catch {
+        return false;
       }
-
-      return 0;
-    }
-
-    /**
-     * Calculate fuzzy match score
-     * More restrictive: requires 70%+ character matching to qualify
-     */
-    function calculateFuzzyScore(text, pattern) {
-      let patternIdx = 0;
-      let consecutiveMatches = 0;
-
-      for (let i = 0; i < text.length && patternIdx < pattern.length; i++) {
-        if (text[i] === pattern[patternIdx]) {
-          consecutiveMatches++;
-          patternIdx++;
-        } else if (consecutiveMatches > 0) {
-          consecutiveMatches -= 0.5;
-        }
-      }
-
-      // Require 70%+ of pattern characters to match (back to 70%)
-      const threshold = Math.ceil(pattern.length * 0.7);
-      if (patternIdx >= threshold) {
-        const score = (patternIdx / pattern.length) * 0.4;
-        // Return actual score (no minimum floor) - require real fuzzy match
-        return score > 0.3 ? score : 0;
-      }
-      return 0;
-    }
-
-    /**
-     * Debounce function to limit search execution
-     */
-    function debounce(func, wait) {
-      let timeout;
-      return function executedFunction(...args) {
-        const later = () => {
-          clearTimeout(timeout);
-          func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-      };
-    }
-
-    /**
-     * Search businesses with AND logic for multi-term queries
-     */
-    function searchBusinesses(searchQuery, categoryFilter) {
-      // If no query and no filter, return all
-      if ((!searchQuery || searchQuery.trim() === '') && categoryFilter === 'all') {
-        return businesses.map(b => ({ item: b, score: 1 }));
-      }
-
-      const results = [];
-      const searchTerms = searchQuery
-        ? searchQuery.toLowerCase().split(/\s+/).filter(Boolean)
-        : [];
-
-      for (const business of businesses) {
-        // Filter by category first - handle missing category gracefully
-        if (categoryFilter !== 'all') {
-          const businessCategory = business.category || '';
-          if (businessCategory !== categoryFilter) {
-            continue;
-          }
-        }
-
-        // If no search query, just add filtered businesses
-        if (searchTerms.length === 0) {
-          results.push({ item: business, score: 1 });
-          continue;
-        }
-
-        // Build searchable text
-        const searchableText = [
-          business.name,
-          business.description || '',
-          business.category || '',
-        ]
-          .filter(Boolean)
-          .join(' ');
-
-        // AND logic: all terms must match
-        let totalScore = 0;
-        let allTermsMatch = true;
-
-        for (const term of searchTerms) {
-          const termScore = scoreMatch(searchableText, term);
-          if (termScore < 0.2) { // MIN_THRESHOLD back to 0.2
-            allTermsMatch = false;
-            break;
-          }
-          totalScore += termScore;
-        }
-
-        if (allTermsMatch) {
-          const averageScore = totalScore / searchTerms.length;
-          results.push({ item: business, score: averageScore });
-        }
-      }
-
-      // Sort by score descending
-      results.sort((a, b) => b.score - a.score);
-      return results;
-    }
-
-    /**
-     * Escape HTML entities to prevent XSS
-     */
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    /**
-     * Highlight matching terms in text
-     */
-    function highlightMatches(text, searchTerms) {
-      if (!text || searchTerms.length === 0) return escapeHtml(text);
-
-      const escapedText = escapeHtml(text);
-      let result = escapedText;
-      const processedTerms = new Set();
-
-      for (const term of searchTerms) {
-        if (processedTerms.has(term)) continue;
-        processedTerms.add(term);
-
-        const normalizedTerm = normalizeString(term);
-        const escapedTerm = normalizedTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const normalizedForMatch = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-        const regex = new RegExp(`\\b${escapedTerm}\\b`, 'gi');
-        
-        result = result.replace(regex, (match) => {
-          return '<mark class="bg-yellow-200 dark:bg-yellow-900 px-0.5 rounded">' + match + '</mark>';
-        });
-      }
-
-      return result;
     }
 
     /**
@@ -296,13 +132,14 @@ const pageDescription = query
       const searchTerms = query ? query.split(/\s+/).filter(Boolean) : [];
       const highlightedName = searchTerms.length > 0 ? highlightMatches(business.name, searchTerms) : business.name;
       const highlightedDesc = searchTerms.length > 0 ? highlightMatches(business.description || '', searchTerms) : (business.description || '');
+      const logoUrl = business.logo_url && isSafeUrl(business.logo_url) ? business.logo_url : null;
 
       return `
         <a href="/negocio/${business.slug}" class="block p-6 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-primary dark:hover:border-accent hover:shadow-lg transition-all">
           <div class="aspect-video rounded-lg bg-stone-200 dark:bg-stone-700 mb-4 flex items-center justify-center overflow-hidden">
             ${
-              business.logo_url
-                ? `<img src="${business.logo_url}" alt="${business.name}" class="w-full h-full object-cover rounded-lg" loading="lazy" />`
+              logoUrl
+                ? `<img src="${logoUrl}" alt="${business.name}" class="w-full h-full object-cover rounded-lg" loading="lazy" />`
                 : `<span class="text-stone-400 text-sm">Sin imagen</span>`
             }
           </div>
@@ -349,7 +186,7 @@ const pageDescription = query
         window.history.replaceState({}, '', url);
       }
 
-      const results = searchBusinesses(currentQuery, currentCategory);
+      const results = doSearch(currentQuery, currentCategory, businesses);
       console.log('📈 Search results:', results.length, 'businesses found');
 
       if (results.length === 0) {

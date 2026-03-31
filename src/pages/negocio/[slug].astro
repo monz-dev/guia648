@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ReviewList from '../../components/ReviewList.astro';
 import ReviewForm from '../../components/ReviewForm.astro';
+import Footer from '../../components/Footer.astro';
 import { getBusinesses, getCategories, type Business, type Category } from '../../lib/data';
 
 export async function getStaticPaths() {
@@ -38,11 +39,6 @@ const jsonLd = {
   "image": business.logo_url,
   "priceRange": "$$",
   "openingHours": "Mo-Su",
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": 27.69,
-    "longitude": -105.49
-  },
   "areaServed": {
     "@type": "City",
     "name": "Camargo"
@@ -53,6 +49,7 @@ const jsonLd = {
 const pageDescription = `${business.name} - ${category?.name || 'Negocio'} en Camargo, Chihuahua. ${business.description || 'Visítanos en Guia648.com'}`;
 const businessSlug = business.slug;
 const businessId = business.id;
+const adminUrl = import.meta.env.PUBLIC_ADMIN_URL || 'https://admin-guia648-d46v.vercel.app';
 ---
 
 <BaseLayout title={business.name} description={pageDescription} image={business.logo_url || undefined}>
@@ -107,14 +104,9 @@ const businessId = business.id;
     </div>
   </main>
 
-  <footer class="py-8 px-4 bg-stone-900 text-stone-400">
-    <div class="max-w-7xl mx-auto text-center">
-      <p class="mb-2">© 2024 Guia648 - Directorio Digital de Camargo, Chihuahua</p>
-      <p class="text-sm">Conectando residentes y turistas con los mejores comercios locales</p>
-    </div>
-  </footer>
+  <Footer />
 
-  <script define:vars={{ businessSlug, businessId }}>
+  <script define:vars={{ businessSlug, businessId, adminUrl }}>
     function escapeAttr(str) {
       return String(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
@@ -203,7 +195,7 @@ const businessId = business.id;
 
         const claimButton = document.getElementById('claim-button');
         if (claimButton) {
-          claimButton.href = `https://admin-guia648-d46v.vercel.app/auth/claim/${business.slug}`;
+          claimButton.href = adminUrl + '/auth/claim/' + business.slug;
         }
 
         document.getElementById('business-reviews')?.setAttribute('data-slug', business.slug);
