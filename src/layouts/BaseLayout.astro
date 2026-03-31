@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Header from '../components/Header.astro';
 
 interface Props {
   title: string;
@@ -19,7 +20,7 @@ const siteUrl = 'https://guia648.com';
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 
 // Google Analytics Measurement ID
-const GA_ID = 'G-LJPLF7MMFF';
+const GA_ID = import.meta.env.PUBLIC_GA_ID || 'G-LJPLF7MMFF';
 ---
 
 <!doctype html>
@@ -87,6 +88,7 @@ const GA_ID = 'G-LJPLF7MMFF';
     </script>
   </head>
   <body class="min-h-screen bg-sand dark:bg-sand-dark text-stone-900 dark:text-sand transition-colors">
+    <Header />
     <slot />
     
     <!-- Service Worker Registration -->

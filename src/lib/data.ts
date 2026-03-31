@@ -44,23 +44,26 @@ export async function getBusinesses(featuredOnly = false): Promise<Business[]> {
  * Get a single business by slug
  */
 export async function getBusinessBySlug(slug: string): Promise<Business | null> {
-  if (!supabase) {
-    console.warn('Supabase client not initialized');
-    return null;
+  // Try Supabase first
+  if (supabase) {
+    const { data, error } = await supabase
+      .from('businesses')
+      .select('*')
+      .eq('slug', slug)
+      .single();
+
+    if (!error && data) {
+      return data;
+    }
+    if (error) {
+      console.error('Error fetching business by slug:', error);
+    }
   }
 
-  const { data, error } = await supabase
-    .from('businesses')
-    .select('*')
-    .eq('slug', slug)
-    .single();
-
-  if (error) {
-    console.error('Error fetching business by slug:', error);
-    return null;
-  }
-
-  return data;
+  // Fallback to local JSON
+  console.warn('Using local JSON data for business by slug');
+  const localBusiness = localBusinesses.find((b) => b.slug === slug);
+  return localBusiness || null;
 }
 
 /**
@@ -88,23 +91,26 @@ export async function getCategories(): Promise<Category[]> {
  * Get a single category by slug
  */
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
-  if (!supabase) {
-    console.warn('Supabase client not initialized');
-    return null;
+  // Try Supabase first
+  if (supabase) {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('slug', slug)
+      .single();
+
+    if (!error && data) {
+      return data;
+    }
+    if (error) {
+      console.error('Error fetching category by slug:', error);
+    }
   }
 
-  const { data, error } = await supabase
-    .from('categories')
-    .select('*')
-    .eq('slug', slug)
-    .single();
-
-  if (error) {
-    console.error('Error fetching category by slug:', error);
-    return null;
-  }
-
-  return data;
+  // Fallback to local JSON
+  console.warn('Using local JSON data for category by slug');
+  const localCategory = localCategories.find((c) => c.slug === slug);
+  return localCategory || null;
 }
 
 /**
@@ -120,6 +126,7 @@ export async function getReviewsByBusiness(businessId: string): Promise<Review[]
     .from('reviews')
     .select('*')
     .eq('business_id', businessId)
+    .eq('approved', true)
     .order('created_at', { ascending: false });
 
   if (error) {

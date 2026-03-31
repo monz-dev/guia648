@@ -180,6 +180,7 @@ export function highlightMatches(text: string, searchTerms: string[]): string {
     // Create regex that matches term with normalized characters
     const normalizedTerm = normalizeString(term);
     const escapedTerm = normalizedTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const normalizedForMatch = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     const regex = new RegExp(`\\b${escapedTerm}\\b`, 'gi');
 
     result = result.replace(regex, '<mark class="bg-yellow-200 dark:bg-yellow-900 px-0.5 rounded">$&</mark>');

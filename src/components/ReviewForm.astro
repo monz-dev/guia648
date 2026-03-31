@@ -22,6 +22,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
   
   <form id="review-form" class="space-y-4">
     <input type="hidden" name="business_slug" value={businessSlug} />
+    <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" />
     
     <div>
       <label for="author_name" class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
@@ -136,6 +137,10 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
       e.preventDefault();
 
       var formData = new FormData(form);
+      var honeypot = formData.get('website');
+      if (honeypot && honeypot.toString().trim() !== '') {
+        return;
+      }
       var rating = parseInt(formData.get('rating'));
 
       if (rating === 0) {

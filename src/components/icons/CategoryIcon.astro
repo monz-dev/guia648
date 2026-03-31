@@ -1,5 +1,6 @@
 ---
 import { Map, UtensilsCrossed, HeartPulse, Wrench } from '@lucide/astro';
+import type { AstroComponentFactory } from 'astro/runtime/server/ast.js';
 
 interface Props {
   icon: string;
@@ -8,7 +9,7 @@ interface Props {
 
 const { icon, class: className } = Astro.props;
 
-const icons: Record<string, any> = {
+const icons: Record<string, AstroComponentFactory> = {
   'map': Map,
   'utensils': UtensilsCrossed,
   'heart-pulse': HeartPulse,

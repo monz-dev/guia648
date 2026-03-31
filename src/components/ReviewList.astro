@@ -143,7 +143,31 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
           for (var j = 1; j <= 5; j++) {
             stars += '<svg class="w-4 h-4 ' + (j <= r.rating ? 'text-yellow-400' : 'text-stone-300 dark:text-stone-600') + '" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>';
           }
-          return '<div class="p-4 rounded-lg bg-stone-50 dark:bg-stone-800/50"><div class="flex items-center justify-between mb-2"><div class="flex items-center gap-2"><span class="font-medium text-stone-900 dark:text-white">' + r.author_name + '</span><div class="flex gap-0.5">' + stars + '</div></div><time class="text-sm text-stone-400">' + date + '</time></div><p class="text-stone-600 dark:text-stone-300">' + r.comment + '</p></div>';
+          var div = document.createElement('div');
+          div.className = 'p-4 rounded-lg bg-stone-50 dark:bg-stone-800/50';
+          var headerDiv = document.createElement('div');
+          headerDiv.className = 'flex items-center justify-between mb-2';
+          var authorDiv = document.createElement('div');
+          authorDiv.className = 'flex items-center gap-2';
+          var authorNameSpan = document.createElement('span');
+          authorNameSpan.className = 'font-medium text-stone-900 dark:text-white';
+          authorNameSpan.textContent = r.author_name;
+          var starsDiv = document.createElement('div');
+          starsDiv.className = 'flex gap-0.5';
+          starsDiv.innerHTML = stars;
+          authorDiv.appendChild(authorNameSpan);
+          authorDiv.appendChild(starsDiv);
+          var timeEl = document.createElement('time');
+          timeEl.className = 'text-sm text-stone-400';
+          timeEl.textContent = date;
+          headerDiv.appendChild(authorDiv);
+          headerDiv.appendChild(timeEl);
+          var commentP = document.createElement('p');
+          commentP.className = 'text-stone-600 dark:text-stone-300';
+          commentP.textContent = r.comment;
+          div.appendChild(headerDiv);
+          div.appendChild(commentP);
+          return div.outerHTML;
         }).join('');
       }
     })

@@ -4,7 +4,7 @@ export interface Business {
   id: string;
   name: string;
   slug: string;
-  category: string;
+  category: string | null;
   description?: string;
   phone?: string;
   whatsapp?: string;
