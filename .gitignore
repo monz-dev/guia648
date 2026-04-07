@@ -31,3 +31,9 @@ netlify.toml
 
 # environment variables (local overrides)
 *.local
+
+# supabase import scripts (contienen keys sensibles)
+scripts/import-*.ts
+
+# environment local (contiene keys sensibles)
+.env.local
