@@ -90,12 +90,8 @@ cd scripts && php -S localhost:8000 -t ..
 Cuando cargues negocios nuevos en Supabase y quieras actualizar los JSONs locales:
 
 ```bash
-# Obtener credenciales de Supabase Dashboard → Settings → API
-export SUPABASE_URL=https://your-project.supabase.co
-export SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-
-# Ejecutar script de sync
-node scripts/sync-from-supabase.mjs
+# Ejecutar script de sync (lee las credenciales de .env.local)
+npx tsx scripts/sync-from-supabase.mjs
 
 # Verificar cambios en los JSONs
 git status
@@ -104,18 +100,26 @@ git status
 ### Commit & Deploy
 
 ```bash
-# 1. Agregar cambios
+# 1. Sincronizar datos desde Supabase
+npx tsx scripts/sync-from-supabase.mjs
+
+# 2. Build local
+npm run build
+
+# 3. Agregar cambios
 git add .
 
-# 2. Commit con mensaje descriptivo
+# 4. Commit con mensaje descriptivo
 git commit -m "feat: agregar nuevos negocios"
 
-# 3. Push a remote
+# 5. Push a remote
 git push
 
-# 4. Build local y subir a HostGator
-npm run build
-# Subir contenido de dist/ + carpeta api/ a HostGator
+# 6. Subir a HostGator
+# Subir CONTENIDO de dist/ (NO la carpeta dist/)
+# Subir src/data/ (los JSONs actualizados)
+# Subir api/ (si hay cambios)
+# Verificar .htaccess actualizado
 ```
 
 ## 📁 Project Structure
