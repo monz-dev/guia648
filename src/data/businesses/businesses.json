@@ -11,9 +11,9 @@
     "address": "Calles Carranza y Centenario",
     "google_maps_url": "https://google.com/maps/place/ALSUPER+PLUS+CAMARGO/data=!4m2!3m1!1s0x0:0x5e96142f7f33ac13?sa=X&ved=1t:2428&ictx=111",
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/alsuper.webp",
-    "featured": true,
+    "featured": false,
     "created_at": "2026-04-07T01:05:58.230531+00:00",
-    "updated_at": "2026-04-07T21:49:12.778367+00:00"
+    "updated_at": "2026-04-07T21:58:43.476087+00:00"
   },
   {
     "id": "c433120c-1d11-4267-9a55-758b80dcefca",
@@ -27,9 +27,9 @@
     "address": "Carretera de La Cruz a Camargo Km 5, Rancho Ojocaliente, Camargo, Chih.",
     "google_maps_url": "https://www.google.com/maps/place/Ojo+Caliente+Hotel+y+Balneario/@27.6797175,-105.2064429,633m/data=!3m1!1e3!4m9!3m8!1s0x8694afcc24c07971:0x5f7ba685fc36603a!5m2!4m1!1i2!8m2!3d27.6797128!4d-105.203868!16s%2Fg%2F11b7lg6q89?entry=ttu&g_ep=EgoyMDI2MDMyMy4xIKXMDSoASAFQAw%3D%3D",
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/ojo-caliente.webp",
-    "featured": true,
+    "featured": false,
     "created_at": "2026-04-07T01:05:57.69865+00:00",
-    "updated_at": "2026-04-07T01:05:57.69865+00:00"
+    "updated_at": "2026-04-07T22:02:32.52702+00:00"
   },
   {
     "id": "ebce67e2-47f6-4226-b39b-9f9be5b4f822",
@@ -43,9 +43,9 @@
     "address": "Lerdo de Tejada 504, Centro, Camargo, Chih.",
     "google_maps_url": "https://www.google.com/maps/place/Botica+Sta+Rosalia/@27.6958694,-109.392117,647915m/data=!3m1!1e3!4m10!1m2!2m1!1sfarmacia+santa+rosalia!3m6!1s0x8694ae5624cfffff:0x152b1b534d2a580e!8m2!3d27.6958694!4d-105.173367!15sChZmYXJtYWNpYSBzYW50YSByb3NhbGlhWhgiFmZhcm1hY2lhIHNhbnRhIHJvc2FsaWGSAQhwaGFybWFjeeABAA!16s%2Fg%2F11g697b14m?entry=ttu&g_ep=EgoyMDI2MDMyMy4xIKXMDSoASAFQAw%3D%3D",
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/botica-santa-rosalia.webp",
-    "featured": true,
+    "featured": false,
     "created_at": "2026-04-07T01:05:58.106374+00:00",
-    "updated_at": "2026-04-07T21:35:59.608426+00:00"
+    "updated_at": "2026-04-07T21:59:25.586626+00:00"
   },
   {
     "id": "0f77ec8a-e3bf-4bb9-8b04-69e81abfbc12",
@@ -59,13 +59,13 @@
     "address": "Benito Ju�rez y abasolo,  Centro, Camargo, Chih.",
     "google_maps_url": "https://www.google.com/maps/place/Caba%C3%B1as+Santa+Rosalia+S.a/@27.692264,-105.173552,633m/data=!3m1!1e3!4m9!3m8!1s0x8694af004a902337:0x4d73cea4beaa062b!5m2!4m1!1i2!8m2!3d27.6931837!4d-105.1732055!16s%2Fg%2F11h54z8v42?entry=ttu&g_ep=EgoyMDI2MDMyMy4xIKXMDSoASAFQAw%3D%3D",
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/cabanas-santa-rosalia.webp",
-    "featured": true,
+    "featured": false,
     "created_at": "2026-04-07T01:05:57.56216+00:00",
-    "updated_at": "2026-04-07T21:34:25.965281+00:00"
+    "updated_at": "2026-04-07T22:00:33.207798+00:00"
   },
   {
     "id": "3c938706-4550-4546-af53-86e73e6dd94f",
-    "name": "Clinica Santa Clara",
+    "name": "Clínica Santa Clara",
     "slug": "clinica-santa-clara",
     "category_id": "33333333-3333-3333-3333-333333333333",
     "category": "salud",
@@ -75,9 +75,9 @@
     "address": "Av. Lic. Benito Ju�rez 105, Centro, Camargo, Chih.",
     "google_maps_url": "https://www.google.com/maps/place/Cl%C3%ADnica+Santa+Clara/@27.6860747,-105.1829924,2531m/data=!3m1!1e3!4m10!1m2!2m1!1sclinica+santa+clara+camargo+chih!3m6!1s0x86ea434f15c72d8b:0xa15488d0e0e75a8b!8m2!3d27.6948833!4d-105.1751861!15sCiBjbGluaWNhIHNhbnRhIGNsYXJhIGNhbWFyZ28gY2hpaJIBDm1lZGljYWxfY2xpbmlj4AEA!16s%2Fg%2F1ttphbfd?entry=ttu&g_ep=EgoyMDI2MDMyMy4xIKXMDSoASAFQAw%3D%3D",
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/santa-clara.webp",
-    "featured": true,
+    "featured": false,
     "created_at": "2026-04-07T01:05:57.9672+00:00",
-    "updated_at": "2026-04-07T21:34:43.080167+00:00"
+    "updated_at": "2026-04-07T22:01:23.749585+00:00"
   },
   {
     "id": "791a5014-59f8-4b13-9687-629f12a773c7",
@@ -93,7 +93,7 @@
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/chacal.webp",
     "featured": true,
     "created_at": "2026-04-07T01:05:56.525131+00:00",
-    "updated_at": "2026-04-07T01:05:56.525131+00:00"
+    "updated_at": "2026-04-07T22:01:43.523045+00:00"
   },
   {
     "id": "1c1e5a1b-ccfc-40a8-89b4-00b0fd4344b7",
@@ -109,7 +109,7 @@
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/nortenito.webp",
     "featured": true,
     "created_at": "2026-04-07T01:05:56.682155+00:00",
-    "updated_at": "2026-04-07T21:34:14.261578+00:00"
+    "updated_at": "2026-04-07T22:03:31.549483+00:00"
   },
   {
     "id": "9ff8dc85-a2a0-44ae-915c-4285e96abcaa",
@@ -225,7 +225,7 @@
   },
   {
     "id": "f7c61e64-9be8-4211-a560-6d7bb621bb83",
-    "name": "Nomada Cafe",
+    "name": "Nómada Café",
     "slug": "nomada-cafe",
     "category_id": "22222222-2222-2222-2222-222222222222",
     "category": "gastronomia",
@@ -237,7 +237,7 @@
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/nomada.webp",
     "featured": true,
     "created_at": "2026-04-07T01:05:56.830996+00:00",
-    "updated_at": "2026-04-07T21:35:41.430174+00:00"
+    "updated_at": "2026-04-07T21:57:44.19073+00:00"
   },
   {
     "id": "9cc3f799-3a5a-4168-8b65-aabaa050c397",
@@ -253,7 +253,7 @@
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/valientes.webp",
     "featured": true,
     "created_at": "2026-04-07T01:05:57.119149+00:00",
-    "updated_at": "2026-04-07T18:38:53.384984+00:00"
+    "updated_at": "2026-04-07T22:02:09.541599+00:00"
   },
   {
     "id": "3ad24c05-27dc-4cb9-9e37-c98223a72788",
@@ -269,6 +269,6 @@
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/wim-hotel.webp",
     "featured": true,
     "created_at": "2026-04-07T01:05:57.426012+00:00",
-    "updated_at": "2026-04-07T01:05:57.426012+00:00"
+    "updated_at": "2026-04-07T22:00:58.486006+00:00"
   }
 ]
