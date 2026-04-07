@@ -4,7 +4,7 @@
     "name": "Alsuper Plus Camargo",
     "slug": "al-super-camargo",
     "category_id": "44444444-4444-4444-4444-444444444444",
-    "category": "comercio",
+    "category": "servicios",
     "description": "Reduce pasos y ahorra pesos comprando en Camargo, Chih.",
     "phone": "6144421181",
     "whatsapp": "6144421181",
@@ -13,7 +13,7 @@
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/botica-santa-rosalia.webp",
     "featured": true,
     "created_at": "2026-04-07T01:05:58.230531+00:00",
-    "updated_at": "2026-04-07T01:05:58.230531+00:00"
+    "updated_at": "2026-04-07T18:40:59.673378+00:00"
   },
   {
     "id": "c433120c-1d11-4267-9a55-758b80dcefca",
@@ -33,7 +33,7 @@
   },
   {
     "id": "ebce67e2-47f6-4226-b39b-9f9be5b4f822",
-    "name": "Botica Santa Rosalia",
+    "name": "Botica Santa Rosalía",
     "slug": "botica-santa-rosalia",
     "category_id": "33333333-3333-3333-3333-333333333333",
     "category": "salud",
@@ -45,15 +45,15 @@
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/botica-santa-rosalia.webp",
     "featured": true,
     "created_at": "2026-04-07T01:05:58.106374+00:00",
-    "updated_at": "2026-04-07T04:05:28.716547+00:00"
+    "updated_at": "2026-04-07T21:35:59.608426+00:00"
   },
   {
     "id": "0f77ec8a-e3bf-4bb9-8b04-69e81abfbc12",
-    "name": "Caba�as Santa Rosalia",
-    "slug": "cabanas'santa'rosalia",
+    "name": "Cabañas Santa Rosalia",
+    "slug": "cabanas-santa-rosalia",
     "category_id": "11111111-1111-1111-1111-111111111111",
     "category": "turismo",
-    "description": "Centrico hotel en Camargo, Chih.",
+    "description": "Céntrico hotel en Camargo, Chih.",
     "phone": "6484620214",
     "whatsapp": "6484620214",
     "address": "Benito Ju�rez y abasolo,  Centro, Camargo, Chih.",
@@ -61,7 +61,7 @@
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/cabanas-santa-rosalia.webp",
     "featured": true,
     "created_at": "2026-04-07T01:05:57.56216+00:00",
-    "updated_at": "2026-04-07T01:05:57.56216+00:00"
+    "updated_at": "2026-04-07T21:34:25.965281+00:00"
   },
   {
     "id": "3c938706-4550-4546-af53-86e73e6dd94f",
@@ -69,7 +69,7 @@
     "slug": "clinica-santa-clara",
     "category_id": "33333333-3333-3333-3333-333333333333",
     "category": "salud",
-    "description": "Clinica con servicios medicos de calidad en Camargo, Chih.",
+    "description": "Clínica con servicios médicos de calidad en Camargo, Chih.",
     "phone": "6484620146",
     "whatsapp": "6484620146",
     "address": "Av. Lic. Benito Ju�rez 105, Centro, Camargo, Chih.",
@@ -77,7 +77,7 @@
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/santa-clara.webp",
     "featured": true,
     "created_at": "2026-04-07T01:05:57.9672+00:00",
-    "updated_at": "2026-04-07T01:05:57.9672+00:00"
+    "updated_at": "2026-04-07T21:34:43.080167+00:00"
   },
   {
     "id": "791a5014-59f8-4b13-9687-629f12a773c7",
@@ -97,11 +97,11 @@
   },
   {
     "id": "1c1e5a1b-ccfc-40a8-89b4-00b0fd4344b7",
-    "name": "El Norte�ito",
+    "name": "El Norteñito",
     "slug": "el-nortenito",
     "category_id": "22222222-2222-2222-2222-222222222222",
     "category": "gastronomia",
-    "description": "Los mejores cortes de carne asada de la regi�n.",
+    "description": "Los mejores cortes de carne asada de la región.",
     "phone": "6484622400",
     "whatsapp": "6484622400",
     "address": "Ave Ju�rez y R�o Conchos sn, Camargo, Chih.",
@@ -109,7 +109,7 @@
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/nortenito.webp",
     "featured": true,
     "created_at": "2026-04-07T01:05:56.682155+00:00",
-    "updated_at": "2026-04-07T01:05:56.682155+00:00"
+    "updated_at": "2026-04-07T21:34:14.261578+00:00"
   },
   {
     "id": "9ff8dc85-a2a0-44ae-915c-4285e96abcaa",
@@ -133,7 +133,7 @@
     "slug": "hospital-regional-camargo",
     "category_id": "33333333-3333-3333-3333-333333333333",
     "category": "salud",
-    "description": "Hospital general con servicio de urgencias, hospitalizacion, laboratorio, quirofano en Camargo, Chih.",
+    "description": "Hospital general con servicio de urgencias, hospitalización, laboratorio, quirófano en Camargo, Chih.",
     "phone": "6484622867",
     "whatsapp": "6484622867",
     "address": "Pablo Ghinter Y, Manuel Doblado S/n, Camargo, Chih.",
@@ -141,7 +141,7 @@
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/hospital-regional.webp",
     "featured": true,
     "created_at": "2026-04-07T01:05:57.822362+00:00",
-    "updated_at": "2026-04-07T01:05:57.822362+00:00"
+    "updated_at": "2026-04-07T21:34:56.351296+00:00"
   },
   {
     "id": "cccccccc-cccc-cccc-cccc-cccccccccccc",
@@ -149,7 +149,7 @@
     "slug": "hotel-santa-fe",
     "category_id": "11111111-1111-1111-1111-111111111111",
     "category": "turismo",
-    "description": "La mejor opcion de hospedaje en Camargo, Chih. ",
+    "description": "La mejor opción de hospedaje en Camargo, Chih. ",
     "phone": "6484624022",
     "whatsapp": "6484624022",
     "address": "Carretera Panamericana Km 67, Camargo, Chih.",
@@ -157,7 +157,7 @@
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/santafe.webp",
     "featured": true,
     "created_at": "2026-03-09T01:17:42.186542+00:00",
-    "updated_at": "2026-03-09T19:14:11.090018+00:00"
+    "updated_at": "2026-04-07T21:35:29.570984+00:00"
   },
   {
     "id": "b9497ac7-eae5-481c-bd4f-00baf76c4d70",
@@ -225,11 +225,11 @@
   },
   {
     "id": "f7c61e64-9be8-4211-a560-6d7bb621bb83",
-    "name": "Nomada Caf�",
-    "slug": "nomada-caf�",
+    "name": "Nomada Cafe",
+    "slug": "nomada-cafe",
     "category_id": "22222222-2222-2222-2222-222222222222",
     "category": "gastronomia",
-    "description": "El mejor caf� de especialidad en Camargo, Chih.",
+    "description": "El mejor café de especialidad en Camargo, Chih.",
     "phone": "6481112233",
     "whatsapp": "6481112233",
     "address": "C. Allende 105, Centro, Camargo, Chih.",
@@ -237,7 +237,7 @@
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/nomada.webp",
     "featured": true,
     "created_at": "2026-04-07T01:05:56.830996+00:00",
-    "updated_at": "2026-04-07T01:05:56.830996+00:00"
+    "updated_at": "2026-04-07T21:35:41.430174+00:00"
   },
   {
     "id": "9cc3f799-3a5a-4168-8b65-aabaa050c397",
@@ -245,15 +245,15 @@
     "slug": "valientes",
     "category_id": "22222222-2222-2222-2222-222222222222",
     "category": "gastronomia",
-    "description": "Rica comida norte�a acompa�ada de deliciosos cocteles y refrescantes bebidas.",
+    "description": "Rica comida norteña acompañada de deliciosos cocteles y refrescantes bebidas.",
     "phone": "6481216352",
     "whatsapp": "6481216352",
-    "address": "Prolongacion, Av. Lic. Benito Ju�rez 1, Centro, Camargo, Chih.",
+    "address": "Prolongacion, Av. Lic. Benito Juarez 1, Centro, Camargo, Chih.",
     "google_maps_url": "https://www.google.com/maps/place/Valientes/@27.696903,-105.1801431,633m/data=!3m2!1e3!4b1!4m6!3m5!1s0x8694afcfcb98501d:0xf3add74e0ba6b5ff!8m2!3d27.6968983!4d-105.1775682!16s%2Fg%2F11j2wlqj61?entry=ttu&g_ep=EgoyMDI2MDMyMy4xIKXMDSoASAFQAw%3D%3D",
     "logo_url": "https://ppxcdlrytxosntggitnk.supabase.co/storage/v1/object/public/businesses/valientes.webp",
     "featured": true,
     "created_at": "2026-04-07T01:05:57.119149+00:00",
-    "updated_at": "2026-04-07T01:05:57.119149+00:00"
+    "updated_at": "2026-04-07T18:38:53.384984+00:00"
   },
   {
     "id": "3ad24c05-27dc-4cb9-9e37-c98223a72788",
