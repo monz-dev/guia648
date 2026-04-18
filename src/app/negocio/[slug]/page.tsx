@@ -1,6 +1,5 @@
 import { getBusinessBySlug, getCategoryBySlug, getReviewsByBusinessSlug } from "@/lib/data";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 
 interface PageProps {
@@ -47,12 +46,11 @@ export default async function BusinessPage({ params }: PageProps) {
       <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 overflow-hidden">
         {/* Logo */}
         {business.logo_url && (
-          <div className="aspect-video w-full bg-stone-200 dark:bg-stone-700">
-            <Image
-              src={business.logo_url}
-              alt={business.name}
-              fill
-              className="object-cover"
+          <div className="relative aspect-video w-full bg-stone-200 dark:bg-stone-700">
+            <img
+              src={business.logo_url || undefined}
+              alt={business.name || ''}
+              className="absolute inset-0 w-full h-full object-cover"
             />
           </div>
         )}

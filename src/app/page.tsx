@@ -2,7 +2,6 @@ import { getCategories, getBusinesses } from "@/lib/data";
 import { CategoryIcon } from "@/components/CategoryIcon";
 import { BusinessCard } from "@/components/BusinessCard";
 import Link from "next/link";
-import Image from "next/image";
 
 // Force dynamic rendering for SSR
 export const dynamic = 'force-dynamic';
@@ -43,12 +42,10 @@ export default async function HomePage() {
       <section className="relative h-[60vh] md:h-[70vh] min-h-[400px] md:min-h-[500px] flex items-center justify-center overflow-hidden">
         {/* Hero Image */}
         <div className="absolute inset-0">
-          <Image
+          <img
             src="/images/hero/hero.webp"
             alt="Camargo, Chihuahua"
-            fill
-            className="object-cover"
-            priority
+            className="w-full h-full object-cover"
           />
           {/* Overlay */}
           <div className="absolute inset-0 bg-black/40 md:bg-black/50" />

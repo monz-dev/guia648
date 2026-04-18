@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { Business } from "@/lib/supabase";
 
 interface BusinessCardProps {
@@ -12,13 +11,13 @@ export function BusinessCard({ business }: BusinessCardProps) {
       href={`/negocio/${business.slug}`}
       className="block p-6 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-primary dark:hover:border-accent hover:shadow-lg transition-all"
     >
-      <div className="aspect-video rounded-lg bg-stone-200 dark:bg-stone-700 mb-4 flex items-center justify-center overflow-hidden">
+      <div className="relative aspect-video rounded-lg bg-stone-200 dark:bg-stone-700 mb-4 flex items-center justify-center overflow-hidden">
         {business.logo_url ? (
-          <Image
-            src={business.logo_url}
-            alt={business.name}
-            fill
-            className="object-cover rounded-lg"
+          <img
+            src={business.logo_url || undefined}
+            alt={business.name || ''}
+            className="absolute inset-0 w-full h-full object-cover rounded-lg"
+            loading="lazy"
           />
         ) : (
           <span className="text-stone-400">Sin imagen</span>
