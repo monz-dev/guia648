@@ -21,7 +21,24 @@
     "afterFiles": [],
     "fallback": []
   },
-  "dynamicRoutes": [],
+  "dynamicRoutes": [
+    {
+      "page": "/directorio/[categoria]",
+      "regex": "^/directorio/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcategoria": "nxtPcategoria"
+      },
+      "namedRegex": "^/directorio/(?<nxtPcategoria>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/negocio/[slug]",
+      "regex": "^/negocio/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/negocio/(?<nxtPslug>[^/]+?)(?:/)?$"
+    }
+  ],
   "staticRoutes": [
     {
       "page": "/",
@@ -40,6 +57,12 @@
       "regex": "^/_not\\-found(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/buscar",
+      "regex": "^/buscar(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/buscar(?:/)?$"
     }
   ],
   "dataRoutes": [],

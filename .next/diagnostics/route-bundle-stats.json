@@ -14,6 +14,48 @@
     ]
   },
   {
+    "route": "/buscar",
+    "firstLoadUncompressedJsBytes": 538548,
+    "firstLoadChunkPaths": [
+      ".next\\static\\chunks\\0wcgw~0y14f46.js",
+      ".next\\static\\chunks\\0d3shmwh5_nmn.js",
+      ".next\\static\\chunks\\16joj-w8x5b8c.js",
+      ".next\\static\\chunks\\045g~0~zva_mv.js",
+      ".next\\static\\chunks\\0dgq26a5_oy.a.js",
+      ".next\\static\\chunks\\10~x95jhs6ns3.js",
+      ".next\\static\\chunks\\0257pdz1-imal.js",
+      ".next\\static\\chunks\\turbopack-0ht2tk.2~q4ta.js"
+    ]
+  },
+  {
+    "route": "/directorio/[categoria]",
+    "firstLoadUncompressedJsBytes": 538548,
+    "firstLoadChunkPaths": [
+      ".next\\static\\chunks\\0wcgw~0y14f46.js",
+      ".next\\static\\chunks\\0d3shmwh5_nmn.js",
+      ".next\\static\\chunks\\16joj-w8x5b8c.js",
+      ".next\\static\\chunks\\045g~0~zva_mv.js",
+      ".next\\static\\chunks\\0dgq26a5_oy.a.js",
+      ".next\\static\\chunks\\10~x95jhs6ns3.js",
+      ".next\\static\\chunks\\0257pdz1-imal.js",
+      ".next\\static\\chunks\\turbopack-0ht2tk.2~q4ta.js"
+    ]
+  },
+  {
+    "route": "/negocio/[slug]",
+    "firstLoadUncompressedJsBytes": 538548,
+    "firstLoadChunkPaths": [
+      ".next\\static\\chunks\\0wcgw~0y14f46.js",
+      ".next\\static\\chunks\\0d3shmwh5_nmn.js",
+      ".next\\static\\chunks\\16joj-w8x5b8c.js",
+      ".next\\static\\chunks\\045g~0~zva_mv.js",
+      ".next\\static\\chunks\\0dgq26a5_oy.a.js",
+      ".next\\static\\chunks\\10~x95jhs6ns3.js",
+      ".next\\static\\chunks\\0257pdz1-imal.js",
+      ".next\\static\\chunks\\turbopack-0ht2tk.2~q4ta.js"
+    ]
+  },
+  {
     "route": "/_not-found",
     "firstLoadUncompressedJsBytes": 524074,
     "firstLoadChunkPaths": [
