@@ -1,11 +1,11 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.warn(
-    'Supabase environment variables are missing. Please set PUBLIC_SUPABASE_URL and PUBLIC_SUPABASE_ANON_KEY in your .env file.'
+    "Supabase environment variables are missing. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your .env file."
   );
 }
 
@@ -13,88 +13,39 @@ export const supabase = supabaseUrl && supabaseAnonKey
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
-/**
- * Upload a business logo to Supabase Storage
- */
-export async function uploadBusinessLogo(
-  businessId: string,
-  file: File
-): Promise<string | null> {
-  if (!supabase) {
-    console.error('Supabase not initialized');
-    return null;
-  }
-
-  const fileExt = file.name.split('.').pop();
-  const fileName = `${businessId}/logo.${fileExt}`;
-
-  const { data, error } = await supabase.storage
-    .from('businesses')
-    .upload(fileName, file, {
-      upsert: true,
-      contentType: file.type,
-    });
-
-  if (error) {
-    console.error('Error uploading logo:', error);
-    return null;
-  }
-
-  const { data: urlData } = supabase.storage
-    .from('businesses')
-    .getPublicUrl(fileName);
-
-  return urlData.publicUrl;
+// Types from Supabase
+export interface Business {
+  id: string;
+  name: string;
+  slug: string;
+  category: string | null;
+  category_id: string | null;
+  description: string | null;
+  phone: string | null;
+  whatsapp: string | null;
+  address: string | null;
+  google_maps_url: string | null;
+  logo_url: string | null;
+  featured: boolean | null;
+  created_at: string | null;
+  updated_at: string | null;
 }
 
-export type Database = {
-  public: {
-    Tables: {
-      businesses: {
-        Row: {
-          id: string;
-          name: string;
-          slug: string;
-          category_id: string | null;
-          category: string | null;
-          description: string | null;
-          phone: string | null;
-          whatsapp: string | null;
-          address: string | null;
-          google_maps_url: string | null;
-          logo_url: string | null;
-          featured: boolean | null;
-          created_at: string | null;
-          updated_at: string | null;
-        };
-        Insert: Omit<Database['public']['Tables']['businesses']['Row'], 'id' | 'created_at' | 'updated_at'>;
-        Update: Partial<Database['public']['Tables']['businesses']['Insert']>;
-      };
-      categories: {
-        Row: {
-          id: string;
-          name: string;
-          slug: string;
-          icon: string | null;
-          order: number | null;
-          created_at: string | null;
-        };
-        Insert: Omit<Database['public']['Tables']['categories']['Row'], 'id' | 'created_at'>;
-        Update: Partial<Database['public']['Tables']['categories']['Insert']>;
-      };
-      reviews: {
-        Row: {
-          id: string;
-          business_id: string | null;
-          author_name: string;
-          rating: number;
-          comment: string | null;
-          approved: boolean | null;
-          created_at: string | null;
-        };
-        Insert: Omit<Database['public']['Tables']['reviews']['Row'], 'id' | 'created_at'>;
-        Update: Partial<Database['public']['Tables']['reviews']['Insert']>;
-      };
-    };
-  };
-};
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string | null;
+  order: number | null;
+  created_at: string | null;
+}
+
+export interface Review {
+  id: string;
+  business_id: string | null;
+  author_name: string;
+  rating: number;
+  comment: string | null;
+  approved: boolean | null;
+  created_at: string | null;
+}

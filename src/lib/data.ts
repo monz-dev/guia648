@@ -1,116 +1,99 @@
-import { supabase, type Database } from './supabase';
-import businessesData from '../data/businesses/businesses.json';
-import categoriesData from '../data/categories/categories.json';
-
-export type Business = Database['public']['Tables']['businesses']['Row'];
-export type Category = Database['public']['Tables']['categories']['Row'];
-export type Review = Database['public']['Tables']['reviews']['Row'];
-
-// Use local JSON data as fallback
-const localBusinesses = businessesData as Business[];
-const localCategories = categoriesData as Category[];
+import { supabase, type Business, type Category, type Review } from "./supabase";
 
 /**
  * Get all businesses, optionally featured only
  */
 export async function getBusinesses(featuredOnly = false): Promise<Business[]> {
-  // Try Supabase first
-  if (supabase) {
-    let query = supabase
-      .from('businesses')
-      .select('*')
-      .order('name', { ascending: true });
-
-    if (featuredOnly) {
-      query = query.eq('featured', true);
-    }
-
-    const { data, error } = await query;
-
-    if (!error && data) {
-      return data;
-    }
+  if (!supabase) {
+    console.warn("Supabase not initialized");
+    return [];
   }
 
-  // Fallback to local JSON
-  console.warn('Using local JSON data for businesses');
+  let query = supabase
+    .from("businesses")
+    .select("*")
+    .order("name", { ascending: true });
+
   if (featuredOnly) {
-    return localBusinesses.filter(b => b.featured);
+    query = query.eq("featured", true);
   }
-  return localBusinesses.sort((a, b) => a.name.localeCompare(b.name));
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error("Error fetching businesses:", error);
+    return [];
+  }
+
+  return data || [];
 }
 
 /**
  * Get a single business by slug
  */
 export async function getBusinessBySlug(slug: string): Promise<Business | null> {
-  // Try Supabase first
-  if (supabase) {
-    const { data, error } = await supabase
-      .from('businesses')
-      .select('*')
-      .eq('slug', slug)
-      .single();
-
-    if (!error && data) {
-      return data;
-    }
-    if (error) {
-      console.error('Error fetching business by slug:', error);
-    }
+  if (!supabase) {
+    console.warn("Supabase not initialized");
+    return null;
   }
 
-  // Fallback to local JSON
-  console.warn('Using local JSON data for business by slug');
-  const localBusiness = localBusinesses.find((b) => b.slug === slug);
-  return localBusiness || null;
+  const { data, error } = await supabase
+    .from("businesses")
+    .select("*")
+    .eq("slug", slug)
+    .single();
+
+  if (error) {
+    console.error("Error fetching business by slug:", error);
+    return null;
+  }
+
+  return data;
 }
 
 /**
  * Get all categories ordered by order field
  */
 export async function getCategories(): Promise<Category[]> {
-  // Try Supabase first
-  if (supabase) {
-    const { data, error } = await supabase
-      .from('categories')
-      .select('*')
-      .order('order', { ascending: true });
-
-    if (!error && data) {
-      return data;
-    }
+  if (!supabase) {
+    console.warn("Supabase not initialized");
+    return [];
   }
 
-  // Fallback to local JSON
-  console.warn('Using local JSON data for categories');
-  return [...localCategories].sort((a, b) => (a.order || 0) - (b.order || 0));
+  const { data, error } = await supabase
+    .from("categories")
+    .select("*")
+    .order("order", { ascending: true });
+
+  if (error) {
+    console.error("Error fetching categories:", error);
+    return [];
+  }
+
+  return data || [];
 }
 
 /**
  * Get a single category by slug
  */
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
-  // Try Supabase first
-  if (supabase) {
-    const { data, error } = await supabase
-      .from('categories')
-      .select('*')
-      .eq('slug', slug)
-      .single();
-
-    if (!error && data) {
-      return data;
-    }
-    if (error) {
-      console.error('Error fetching category by slug:', error);
-    }
+  if (!supabase) {
+    console.warn("Supabase not initialized");
+    return null;
   }
 
-  // Fallback to local JSON
-  console.warn('Using local JSON data for category by slug');
-  const localCategory = localCategories.find((c) => c.slug === slug);
-  return localCategory || null;
+  const { data, error } = await supabase
+    .from("categories")
+    .select("*")
+    .eq("slug", slug)
+    .single();
+
+  if (error) {
+    console.error("Error fetching category by slug:", error);
+    return null;
+  }
+
+  return data;
 }
 
 /**
@@ -118,19 +101,19 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
  */
 export async function getReviewsByBusiness(businessId: string): Promise<Review[]> {
   if (!supabase) {
-    console.warn('Supabase client not initialized');
+    console.warn("Supabase not initialized");
     return [];
   }
 
   const { data, error } = await supabase
-    .from('reviews')
-    .select('*')
-    .eq('business_id', businessId)
-    .eq('approved', true)
-    .order('created_at', { ascending: false });
+    .from("reviews")
+    .select("*")
+    .eq("business_id", businessId)
+    .eq("approved", true)
+    .order("created_at", { ascending: false });
 
   if (error) {
-    console.error('Error fetching reviews:', error);
+    console.error("Error fetching reviews:", error);
     return [];
   }
 
@@ -147,21 +130,19 @@ export async function insertReview(
   comment: string
 ): Promise<{ success: boolean; error?: string }> {
   if (!supabase) {
-    return { success: false, error: 'Supabase client not initialized' };
+    return { success: false, error: "Supabase client not initialized" };
   }
 
-  const { error } = await supabase
-    .from('reviews')
-    .insert({
-      business_id: businessId,
-      author_name: authorName,
-      rating,
-      comment,
-      approved: false, // Require moderation
-    });
+  const { error } = await supabase.from("reviews").insert({
+    business_id: businessId,
+    author_name: authorName,
+    rating,
+    comment,
+    approved: false, // Require moderation
+  });
 
   if (error) {
-    console.error('Error inserting review:', error);
+    console.error("Error inserting review:", error);
     return { success: false, error: error.message };
   }
 
@@ -169,35 +150,35 @@ export async function insertReview(
 }
 
 /**
- * Get reviews by business slug (client-side)
+ * Get reviews by business slug
  */
 export async function getReviewsByBusinessSlug(businessSlug: string): Promise<Review[]> {
   if (!supabase) {
-    console.warn('Supabase client not initialized');
+    console.warn("Supabase not initialized");
     return [];
   }
 
   // First get the business ID from slug
   const { data: business, error: businessError } = await supabase
-    .from('businesses')
-    .select('id')
-    .eq('slug', businessSlug)
+    .from("businesses")
+    .select("id")
+    .eq("slug", businessSlug)
     .single();
 
   if (businessError || !business) {
-    console.error('Error fetching business:', businessError);
+    console.error("Error fetching business:", businessError);
     return [];
   }
 
   const { data, error } = await supabase
-    .from('reviews')
-    .select('*')
-    .eq('business_id', business.id)
-    .eq('approved', true) // Only show approved reviews
-    .order('created_at', { ascending: false });
+    .from("reviews")
+    .select("*")
+    .eq("business_id", business.id)
+    .eq("approved", true)
+    .order("created_at", { ascending: false });
 
   if (error) {
-    console.error('Error fetching reviews:', error);
+    console.error("Error fetching reviews:", error);
     return [];
   }
 
@@ -209,29 +190,18 @@ export async function getReviewsByBusinessSlug(businessSlug: string): Promise<Re
  */
 export async function getBusinessesByCategory(categorySlug: string): Promise<Business[]> {
   if (!supabase) {
-    console.warn('Supabase client not initialized');
-    return [];
-  }
-
-  const { data: category, error: categoryError } = await supabase
-    .from('categories')
-    .select('slug')
-    .eq('slug', categorySlug)
-    .single();
-
-  if (categoryError || !category) {
-    console.error('Error fetching category:', categoryError);
+    console.warn("Supabase not initialized");
     return [];
   }
 
   const { data, error } = await supabase
-    .from('businesses')
-    .select('*')
-    .eq('category', category.slug)
-    .order('name', { ascending: true });
+    .from("businesses")
+    .select("*")
+    .eq("category", categorySlug)
+    .order("name", { ascending: true });
 
   if (error) {
-    console.error('Error fetching businesses by category:', error);
+    console.error("Error fetching businesses by category:", error);
     return [];
   }
 
@@ -243,20 +213,20 @@ export async function getBusinessesByCategory(categorySlug: string): Promise<Bus
  */
 export async function searchBusinesses(query: string): Promise<Business[]> {
   if (!supabase) {
-    console.warn('Supabase client not initialized');
+    console.warn("Supabase not initialized");
     return [];
   }
 
   const searchTerm = `%${query}%`;
 
   const { data, error } = await supabase
-    .from('businesses')
-    .select('*')
+    .from("businesses")
+    .select("*")
     .or(`name.ilike.${searchTerm},description.ilike.${searchTerm}`)
-    .order('name', { ascending: true });
+    .order("name", { ascending: true });
 
   if (error) {
-    console.error('Error searching businesses:', error);
+    console.error("Error searching businesses:", error);
     return [];
   }
 

@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Theme Colors */
+@layer base {
+  html {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-sand dark:bg-sand-dark text-stone-900 dark:text-sand antialiased;
+  }
+}
+
+@layer utilities {
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Custom colors */
+@layer base {
+  :root {
+    --color-primary: #8b7355;
+    --color-primary-dark: #6b5744;
+    --color-accent: #c9a86c;
+    --color-accent-dark: #a8884d;
+    --color-sand: #f5f0e8;
+    --color-sand-dark: #1a1915;
+  }
+}
