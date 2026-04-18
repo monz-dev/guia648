@@ -37,3 +37,4 @@ scripts/import-*.ts
 
 # environment local (contiene keys sensibles)
 .env.local
+.env.production
