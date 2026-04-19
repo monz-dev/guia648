@@ -39,11 +39,11 @@ export default async function HomePage() {
       />
 
       {/* Hero Section */}
-      <section className="relative h-[60vh] md:h-[70vh] min-h-[400px] md:min-h-[500px] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[40vh] md:h-[50vh] min-h-[400px] md:min-h-[500px] flex items-center justify-center overflow-hidden">
         {/* Hero Image */}
         <div className="absolute inset-0">
           <img
-            src="/images/hero/hero.webp"
+            src="/images/hero/hero-2025.webp"
             alt="Camargo, Chihuahua"
             className="w-full h-full object-cover"
           />
