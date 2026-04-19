@@ -3,7 +3,7 @@
 > Directorio digital de comercios y servicios locales de Camargo, Chih. 
 
 [![GitHub stars](https://img.shields.io/github/stars/monz-dev/guia648)](https://github.com/monz-dev/guia648)
-[![Build](https://img.shields.io/badge/Build-Astro%205.x-blue)](https://astro.build)
+[![Build](https://img.shields.io/badge/Build-Next.js%2016-blue)](https://nextjs.org)
 
 ## 📱 Preview
 
@@ -22,12 +22,12 @@ Plataforma web tipo directorio diseñada para conectar habitantes y turistas con
 
 | Capa | Tecnología |
 |------|------------|
-| Frontend | Astro 5.x (SSG) |
-| Estilos | TailwindCSS 4 |
-| Backend | Supabase (DB + Auth) |
+| Frontend | Next.js 16 (App Router) |
+| Estilos | TailwindCSS 3 |
+| Backend | Supabase (DB) |
 | Icons | Lucide |
-| Hosting | Hostgator (estático) |
-| Admin | Vercel |
+| Hosting | Vercel |
+| Admin | admin-guia648 |
 
 ## 🚀 Getting Started
 
@@ -56,94 +56,76 @@ npm run dev
 ### Environment Variables
 
 ```env
-# Supabase
-PUBLIC_SUPABASE_URL=your_supabase_url
-PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+# Supabase (create .env.local for local development)
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 ### Build for Production
 
 ```bash
-# Build static site
 npm run build
-
-# Preview build locally
-npm run preview
 ```
 
-The static output will be in `dist/` - ready to upload to Hostgator.
+The output will be in `.next/` - automatically deployed by Vercel.
 
 ## 🔄 Workflow
 
 ### Desarrollo Local
 
 ```bash
-# Iniciar servidor de desarrollo (Astro en puerto 4321)
 npm run dev
-
-# En otra terminal, iniciar API PHP (para datos de negocios)
-cd scripts && php -S localhost:8000 -t ..
 ```
 
-### Sincronizar Datos desde Supabase
+### Deploy
 
-Cuando cargues negocios nuevos en Supabase y quieras actualizar los JSONs locales:
-
-```bash
-# Ejecutar script de sync (lee las credenciales de .env.local)
-npx tsx scripts/sync-from-supabase.mjs
-
-# Verificar cambios en los JSONs
-git status
-```
-
-### Commit & Deploy
+El contenido se actualiza automáticamente desde Supabase. Solo hacés push y Vercel hace deploy:
 
 ```bash
-# 1. Sincronizar datos desde Supabase
-npx tsx scripts/sync-from-supabase.mjs
-
-# 2. Build local
-npm run build
-
-# 3. Agregar cambios
 git add .
-
-# 4. Commit con mensaje descriptivo
-git commit -m "feat: agregar nuevos negocios"
-
-# 5. Push a remote
+git commit -m "feat: description del cambio"
 git push
-
-# 6. Subir a HostGator
-# Subir CONTENIDO de dist/ (NO la carpeta dist/)
-# Subir src/data/ (los JSONs actualizados)
-# Subir api/ (si hay cambios)
-# Verificar .htaccess actualizado
 ```
+
+Vercel detecta el cambio y deploya automáticamente.
+
+### Admin
+
+Para administrar contenido, ir a: https://admin-guia648.vercel.app
 
 ## 📁 Project Structure
 
 ```
 src/
-├── components/       # UI components
-│   ├── BusinessCard.astro
-│   ├── BusinessList.astro
-│   ├── ThemeToggle.astro
-│   └── ...
-├── data/            # Static data (JSON)
-│   ├── businesses/
-│   └── categories/
-├── layouts/         # Page layouts
-├── lib/             # Utilities & clients
-│   ├── supabase.ts
-│   └── utils.ts
-├── pages/           # Routes
-│   ├── index.astro
-│   ├── directorio/[categoria].astro
-│   └── negocio/[slug].astro
-└── styles/          # Global styles
+├── app/                    # Next.js App Router
+│   ├── layout.tsx        # Root layout
+│   ├── page.tsx        # Home page
+│   ├── buscar/         # Search page
+│   ├── directorio/    # Category pages
+│   │   └── [categoria]/
+│   └── negocio/       # Business detail pages
+│       └── [slug]/
+├── components/           # UI components
+│   ├── Header.tsx
+│   ├── Footer.tsx
+│   ├── BusinessCard.tsx
+│   ├── CategoryIcon.tsx
+│   └── providers/       # Theme provider
+├── lib/                 # Utilities & clients
+│   ├── supabase.ts   # Client + types
+│   ├── data.ts     # Query functions
+│   └── utils.ts    # Helpers
+└── public/            # Static assets
+    └── images/
+        ├── hero/
+        └── logo.png
 ```
+
+## 🌐 Dominio
+
+El sitio está disponible en: https://guia648.com
+
+DNS configurado en HostGator → Vercel
 
 ## 📄 License
 
