@@ -68,7 +68,7 @@ export default async function HomePage() {
             <input
               type="search"
               name="q"
-              placeholder="Buscar: nuts, restaurant, pharmacy..."
+              placeholder="Buscar: restaurant, hotel, farmacia..."
               className="flex-1 px-4 py-3 rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 text-stone-900 dark:text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-accent text-base"
             />
             <button

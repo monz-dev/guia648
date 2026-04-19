@@ -36,7 +36,7 @@ export default async function SearchPage({
             id="search-input"
             name="q"
             defaultValue={query}
-            placeholder="Buscar: nuts, restaurant, pharmacy..."
+            placeholder="Buscar: restaurant, hotel, farmacia..."
             className="w-full md:w-auto md:min-w-[300px] px-4 py-3 rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 text-stone-900 dark:text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-accent"
             autoFocus
           />
