@@ -1,8 +1,0 @@
-{
-  "/_global-error/page": "/_global-error",
-  "/_not-found/page": "/_not-found",
-  "/buscar/page": "/buscar",
-  "/directorio/[categoria]/page": "/directorio/[categoria]",
-  "/negocio/[slug]/page": "/negocio/[slug]",
-  "/page": "/"
-}
