@@ -20,7 +20,12 @@ export function Header() {
   return (
     <header className="fixed top-0 w-full bg-white dark:bg-sand-dark border-b border-stone-200 dark:border-stone-800 z-50">
       <nav className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="flex items-center">
+        <Link href="/" className="flex items-center gap-2">
+          <img
+            src="/images/logo-guia-648.png"
+            alt="Guia648"
+            className="h-20 w-auto"
+          />
           <div className="flex flex-col items-center leading-none">
             <span className="text-2xl font-bold text-primary dark:text-accent tracking-wider">GUIA</span>
             <span className="text-2xl font-bold text-stone-600 dark:text-stone-400">648</span>
